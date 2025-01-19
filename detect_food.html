@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Detection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1495195134817-aeb325a55b65?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat fixed;
+            padding: 2rem 1rem;
+            color: #2D3436;
+            line-height: 1.6;
+        }
+
+        .app-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 3rem;
+            position: relative;
+            max-width: 800px; /* Added max-width for better layout */
+            margin: 0 auto; /* Center the container */
+        }
+
+        .title {
+            font-size: 2.5rem; /* Adjusted font size */
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            display: block; /* Center the button */
+            margin: 0 auto; /* Center the button */
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .loading {
+            display: none;
+            margin: 2rem auto;
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 107, 107, 0.3);
+            border-top: 4px solid #FF6B6B;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .link {
+            margin-top: 10px;
+            display: block;
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1 class="title">Food Detection</h1>
+        <div id="imageInput" class="input-section mb-4">
+            <input type="file" id="fileInput" accept="image/*" class="form-control">
+        </div>
+        
+        <button class="btn btn-submit" onclick="uploadImage()">Submit</button>
+        <div id="loading" class="loading"></div>
+        <div id="results" class="mt-4"></div>
+    </div>
+
+    <script>
+        function uploadImage() {
+            const loading = document.getElementById('loading');
+            const resultsDiv = document.getElementById('results');
+            const formData = new FormData();
+            const fileInput = document.getElementById('fileInput');
+
+            loading.style.display = 'block';
+            resultsDiv.innerHTML = ''; // Clear previous results
+
+            if (!fileInput.files.length) {
+                alert('Please select an image file.');
+                loading.style.display = 'none';
+                return;
+            }
+
+            formData.append('image', fileInput.files[0]);
+
+            fetch('https://ai-utu2.onrender.com/food_detect', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loading.style.display = 'none';
+
+                if (data.error) {
+                    resultsDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <h3>Detection Result</h3>
+                        <p>${data.instructions}</p>
+
+
+                        <h4>Google Links:</h4>
+                        ${data.GoogleSearch && data.GoogleSearch.length > 0 ? 
+                            data.GoogleSearch.map(group => 
+                                group.map(item => `
+                                    <a class="link" href="${item.link}" target="_blank">${item.title}</a>
+                                    <p>${item.description}</p>
+                                `).join('')
+                            ).join('') : 
+                            '<p>No Google links available.</p>'}
+
+
+                        <h4>YouTube Links:</h4>
+                        ${data.YoutubeSearch && data.YoutubeSearch.length > 0 ?
+                            data.YoutubeSearch.map(group =>
+                                group.map(item => `
+                                    <a class="link" href="${item.link}" target="_blank">${item.title}</a>
+                                `).join('')
+                            ).join('') :
+                            '<p>No YouTube links available.</p>'}
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loading.style.display = 'none'; // Hide loading spinner on error
+            });
+        }
+    </script>
+</body>
+</html>
