@@ -74,6 +74,11 @@
             margin: 0 auto;
         }
 
+        .card-body{
+            padding: 1rem;
+            margin-top: 10px;
+        }
+
         .app-container {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 2rem;
@@ -172,6 +177,18 @@
         }
 
         .result-card {
+            background: var(--card-gradient);
+            border-radius: 1.5rem;
+            border: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: 100%;
+           
+        }
+
+        .result-card2{
+            margin-top: 30px;
             background: var(--card-gradient);
             border-radius: 1.5rem;
             border: none;
@@ -282,6 +299,16 @@
                 padding: 0.75rem 1.5rem;
                 font-size: 1rem;
             }
+        }
+
+        .instructions {
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .instructions p {
+            margin: 0;
+            line-height: 1.4;
         }
     </style>
 </head>
@@ -466,18 +493,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(data => {
                     loading.style.display = 'none';
 
-                    resultsDiv.innerHTML += `
-                        <div class="row g-4 mt-4">
-                            <div class="col-12">
-                                <div class="result-card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Cooking Instructions</h5>
-                                        <p class="mb-0">${data.instructions}</p>
-                                    </div>
-                                </div>
+                    // Structure the cooking instructions
+                    let instructions = data.instructions;
+
+                    // Replace double asterisks with bold tags and add line breaks
+                    instructions = instructions.replace(/\*\*(.*?)\*\*/g, '<br><strong>$1</strong><br>');
+
+                    // Replace single asterisks with paragraph tags
+                    instructions = instructions.replace(/\*\s*(.*?)\s*\*/g, '<p>$1</p>');
+
+                    // Replace numbered items with line breaks
+                    instructions = instructions.replace(/(\d+\.)/g, '<br>$1');
+
+                    // Create structured HTML
+                    const structuredInstructions = `
+                        <div class="result-card2">
+                            <div class="card-body">
+                                <h5 class="card-title">Cooking Instructions</h5>
+                                <div class="instructions">${instructions}</div>
                             </div>
                         </div>
-                        <div class="row g-4 mt-4">
+
+
+                         <div class="row g-4 mt-4">
                             <div class="col-md-6">
                                 <div class="result-card">
                                     <div class="card-body">
@@ -529,6 +567,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                         </div>
                     `;
+
+                    resultsDiv.innerHTML += structuredInstructions;
                 })
                 .catch(error => {
                     console.error('Error fetching instructions:', error);
