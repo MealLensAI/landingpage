@@ -403,8 +403,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         analysisId = data.analysis_id;
 
                         const analysisItems = data.response
-                            .split('\n')
-                            .filter(line => line.trim())
                             .map((item, index) => `<li class="mb-3">${item.trim()}</li>`)
                             .join('');
 
