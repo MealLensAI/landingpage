@@ -358,14 +358,12 @@
     <script>
 
         function switchTo(screen) {
-            if (screen === 'detect') {
-                window.location.replace('detect_food.html');
-            } else if (screen === 'response') {
-                window.location.replace('ai_response.html');
-            }
-        }
-        
-        
+    if (screen === 'detect') {
+        window.location.href = 'detect_food.html';
+    } else if (screen === 'response') {
+        window.location.href = 'ai_response.html';
+    }
+}
 
 // Highlight the active button for the current page
 document.addEventListener('DOMContentLoaded', () => {
