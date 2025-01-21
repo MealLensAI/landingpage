@@ -234,12 +234,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     resultsDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
                 } else {
                     resultsDiv.innerHTML = `
-                           <div class="result-card2">
-                            <div class="card-body">
-                                <h5 class="card-title">Cooking Instructions</h5>
-                                <div class="instructions">${instructions}</div>
-                            </div>
-                        </div>
+                        <h3>Detection Result</h3>
+                        <p>${data.instructions}</p>
+
 
                         <h4>Google Links:</h4>
                         ${data.GoogleSearch && data.GoogleSearch.length > 0 ?
