@@ -112,6 +112,36 @@
             display: block;
             color: #3498db;
         }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1.5rem;
+            border: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .result-card2 {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1.5rem;
+            border: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .instructions {
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .instructions p {
+            margin: 0;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -126,7 +156,11 @@
     <div class="app-container">
         <h1 class="title">Food Detection</h1>
         <div id="imageInput" class="input-section mb-4">
-            <input type="file" id="fileInput" accept="image/*" class="form-control">
+            <input type="file" id="fileInput" accept="image/*" class="form-control" onchange="previewImage(event)">
+            <!-- Image preview element with fixed size and centered -->
+            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                <img id="imagePreview" src="" alt="Image Preview" style="display: none; width: 400px; height: 300px; object-fit: cover; border-radius: 1rem;">
+            </div>
         </div>
 
         <button class="btn btn-submit" onclick="uploadImage()">Submit</button>
@@ -153,6 +187,23 @@ document.addEventListener('DOMContentLoaded', () => {
     detectButton.classList.add('active'); // Mark this button as active
 });
 
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('imagePreview');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result; // Set the image source to the file's data URL
+                    preview.style.display = 'block'; // Show the image preview
+                }
+                reader.readAsDataURL(file); // Read the file as a data URL
+            } else {
+                preview.src = ''; // Clear the preview if no file is selected
+                preview.style.display = 'none'; // Hide the image preview
+            }
+        }
 
         function uploadImage() {
             const loading = document.getElementById('loading');
@@ -183,16 +234,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     resultsDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
                 } else {
                     resultsDiv.innerHTML = `
-                        <h3>Detection Result</h3>
-                        <p>${data.instructions}</p>
-
+                           <div class="result-card2">
+                            <div class="card-body">
+                                <h5 class="card-title">Cooking Instructions</h5>
+                                <div class="instructions">${instructions}</div>
+                            </div>
+                        </div>
 
                         <h4>Google Links:</h4>
                         ${data.GoogleSearch && data.GoogleSearch.length > 0 ?
                             data.GoogleSearch.map(group =>
                                 group.map(item => `
-                                    <a class="link" href="${item.link}" target="_blank">${item.title}</a>
-                                    <p>${item.description}</p>
+                                    <div class="result-card">
+                                        <a class="link" href="${item.link}" target="_blank">${item.title}</a>
+                                        <p>${item.description}</p>
+                                    </div>
                                 `).join('')
                             ).join('') :
                             '<p>No Google links available.</p>'}
@@ -202,7 +258,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${data.YoutubeSearch && data.YoutubeSearch.length > 0 ?
                             data.YoutubeSearch.map(group =>
                                 group.map(item => `
-                                    <a class="link" href="${item.link}" target="_blank">${item.title}</a>
+                                    <div class="result-card">
+                                        <a class="link" href="${item.link}" target="_blank">${item.title}</a>
+                                    </div>
                                 `).join('')
                             ).join('') :
                             '<p>No YouTube links available.</p>'}
