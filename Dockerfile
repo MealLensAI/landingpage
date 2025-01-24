@@ -2,10 +2,12 @@
 FROM nginx:alpine
 
 # Set the working directory
-WORKDIR /usr/share/nginx/html
+WORKDIR /app
 
-# Copy the landing page files into the Nginx HTML directory
-COPY ..
+
+# Copy the rest of the application code into the container
+COPY . /app/
+
 
 # Expose port 80
 EXPOSE 80
