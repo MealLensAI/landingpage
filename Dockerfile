@@ -9,17 +9,11 @@ COPY nginx.conf /etc/nginx/conf.d
 
 # Set the working directory
 WORKDIR /usr/share/nginx/html
-
-
-
-
 # Copy the landing page files into the Nginx HTML directory
-COPY detect_food.html ./
-COPY index.html ./
-COPY README.md ./
-COPY assets/ ./assets/
-COPY ai_response.html ./
-
+COPY @landingpage/index.html ./
+COPY @landingpage/README.md ./
+COPY @landingpage/assets/ ./assets/
+COPY @landingpage/ai_response.html ./
 
 # Expose port 80
 EXPOSE 80
