@@ -1,16 +1,11 @@
-# Use the official Nginx image from the Docker Hub
+# Use an official Nginx image
 FROM nginx:alpine
 
-# Set the working directory
-WORKDIR /app
-
-
-# Copy the rest of the application code into the container
-COPY . /app/
-
+# Copy HTML files into Nginx's default directory
+COPY website/ /usr/share/nginx/html
 
 # Expose port 80
 EXPOSE 80
 
-# Start Nginx
+# Start Nginx when the container runs
 CMD ["nginx", "-g", "daemon off;"]
