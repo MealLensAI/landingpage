@@ -31,6 +31,31 @@
 
     <!--====== Style CSS ======-->
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Carousel Controls Styling */
+        .features_area .carousel-control-prev,
+        .features_area .carousel-control-next {
+            width: 5%;
+            opacity: 0.7;
+        }
+
+        .features_area .carousel-control-prev-icon,
+        .features_area .carousel-control-next-icon {
+            background-color: #e09026;
+            padding: 2px;
+            border-radius: 25%;
+        }
+
+        .features_area .carousel {
+            padding: 0 50px;
+        }
+
+        @media (max-width: 768px) {
+            .features_area .carousel {
+                padding: 0 30px;
+            }
+        }
+    </style>
 
 </head>
 
@@ -69,34 +94,37 @@
                     <div class="col-lg-12">
                         <nav class="navbar navbar-expand-lg">
                             <a class="navbar-brand" href="index.html">
-<!--                                <img src="assets/images/youtube_profile_image-removebg-preview.png" alt="Logo" style="height: 300px; width: auto;">-->
+                                <img src="assets/images/logo.svg" alt="Logo" ">
                             </a>
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <button class=" navbar-toggler" type="button" data-toggle="collapse"
+                                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                    aria-expanded="false" aria-label="Toggle navigation">
                                 <span class="toggler-icon"></span>
                                 <span class="toggler-icon"></span>
                                 <span class="toggler-icon"></span>
-                            </button>
+                                </button>
 
-                            <div class= j                                                                                                                                                                     v"collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
-                                <ul id="nav" class="navbar-nav ml-auto">
-                                    <li class="nav-item active">
-                                        <a class="page-scroll" href="#home">Home</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="page-scroll" href="#features">Feature</a>
-                                   n </li>
-                                    <li class="nav-item">
-                                        <a class="page-scroll" href="#about">About</a>
-                                    </li>
+                                <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
+                                    <ul id="nav" class="navbar-nav ml-auto">
+                                        <li class="nav-item active">
+                                            <a class="page-scroll" href="#home">Home</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="page-scroll" href="#features">Feature</a>
+                                            n
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="page-scroll" href="#about">About</a>
+                                        </li>
 
-                                    <li class="nav-item">
-                                        <a class="page-scroll" href="#pricing">Pricing</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="page-scroll" href="#blog">Join Wait List</a>
-                                    </li>
-                                </ul>
-                            </div> <!-- navbar collapse -->
+                                        <li class="nav-item">
+                                            <a class="page-scroll" href="#pricing">Pricing</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="page-scroll" href="#blog">Join Wait List</a>
+                                        </li>
+                                    </ul>
+                                </div> <!-- navbar collapse -->
                         </nav> <!-- navbar -->
                     </div>
                 </div> <!-- row -->
@@ -116,11 +144,15 @@
                                 Discover Meals with MealLensAI
                             </h2>
                             <p class="wow fadeInLeftBig" data-wow-duration="1.3s" data-wow-delay="0.6s">
-                                MealLensAI is your smart kitchen assistant. Snap a picture of your ingredients or a meal, and let AI guide you with recipes, cooking tips, and personalized suggestions. Simplify meal prep like never before!
+                                MealLensAI is your smart kitchen assistant. Snap a picture of your ingredients or a
+                                meal, and let AI guide you with recipes, cooking tips, and personalized suggestions.
+                                Simplify meal prep like never before!
                             </p>
                             <ul>
-                                <li><a class="main-btn wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="1s" href="#features">Explore Features</a></li>
-                                <li><a class="main-btn main-btn-2 wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="1.4s" href="ai_response.html">Test Now</a></li>
+                                <li><a class="main-btn wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="1s"
+                                        href="#features">Explore Features</a></li>
+                                <li><a class="main-btn main-btn-2 wow fadeInUp" data-wow-duration="1.3s"
+                                        data-wow-delay="1.4s" href="ai_response.html">Test Now</a></li>
                             </ul>
                         </div> <!-- header hero content -->
                     </div>
@@ -128,14 +160,14 @@
             </div> <!-- container -->
             <div class="header_image d-flex align-items-end">
                 <div class="image wow fadeInRightBig" data-wow-duration="1.3s" data-wow-delay="1.8s">
-                    <img src="MealLens/Home%20Page.png" height="600px" alt="MealLens App">
-                     <img src="MealLens/AI%20chat-1.png" height="600px" alt="MealLens App">
+                    <img src="/assets/images/appImage/3.png" height="600px" alt="MealLens App">
+                  
                     <img src="assets/images/dots.svg" alt="decorative dots" class="dots">
                 </div> <!-- image -->
             </div> <!-- header image -->
         </div>
 
- <!-- header hero -->
+        <!-- header hero -->
     </section>
 
     <!--====== HEADER PART ENDS ======-->
@@ -145,48 +177,123 @@
     <section id="features" class="features_area pt-35 pb-80">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-4 col-md-7 col-sm-8">
-                    <div class="single_features mt-30 features_1 text-center wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">
-                        <div class="features_icon">
-                            <i class="lni lni-camera"></i>
+                <div class="col-lg-6">
+                    <div class="section_title text-center pb-25">
+                        <h4 class="title">Our Features</h4>
+                        <p>Discover what makes MealLensAI your perfect kitchen companion</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="featuresCarousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <!-- First slide -->
+                    <div class="carousel-item active">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-4 col-md-7 col-sm-8">
+                                <div class="single_features mt-30 features_1 text-center wow fadeInUp"
+                                    data-wow-duration="1.3s" data-wow-delay="0.2s">
+                                    <div class="features_icon">
+                                        <i class="lni lni-camera"></i>
+                                    </div>
+                                    <div class="features_content">
+                                        <h4 class="features_title">Smart Ingredient Recognition</h4>
+                                        <p>Snap a picture or upload an image of your ingredients, and let MealLensAI
+                                            identify them instantly using cutting-edge AI technology.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-7 col-sm-8">
+                                <div class="single_features mt-30 features_2 text-center wow fadeInUp"
+                                    data-wow-duration="1.3s" data-wow-delay="0.5s">
+                                    <div class="features_icon">
+                                        <i class="lni lni-restaurant"></i>
+                                    </div>
+                                    <div class="features_content">
+                                        <h4 class="features_title">Recipe Suggestions</h4>
+                                        <p>Discover tailored recipes based on your ingredients. Get options for quick
+                                            meals, advanced dishes, or alternative ingredients.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-7 col-sm-8">
+                                <div class="single_features mt-30 features_3 text-center wow fadeInUp"
+                                    data-wow-duration="1.3s" data-wow-delay="0.9s">
+                                    <div class="features_icon">
+                                        <i class="lni lni-heart"></i>
+                                    </div>
+                                    <div class="features_content">
+                                        <h4 class="features_title">Personalized Experience</h4>
+                                        <p>Save your favorite recipes, plan meals for the week, and get health insights
+                                            for a more personalized cooking journey.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="features_content">
-                            <h4 class="features_title">Smart Ingredient Recognition</h4>
-                            <p>Snap a picture or upload an image of your ingredients, and let MealLensAI identify them instantly using cutting-edge AI technology.</p>
+                    </div>
+
+                    <!-- Second slide -->
+                    <div class="carousel-item">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-4 col-md-7 col-sm-8">
+                                <div class="single_features mt-30 features_4 text-center wow fadeInUp"
+                                    data-wow-duration="1.3s" data-wow-delay="0.2s">
+                                    <div class="features_icon">
+                                        <i class="lni lni-camera"></i>
+                                    </div>
+                                    <div class="features_content">
+                                        <h4 class="features_title">Nutritional Analysis</h4>
+                                        <p>Get detailed nutritional information for ingredients and complete meals to
+                                            make informed dietary choices.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-7 col-sm-8">
+                                <div class="single_features mt-30 features_5 text-center wow fadeInUp"
+                                    data-wow-duration="1.3s" data-wow-delay="0.5s">
+                                    <div class="features_icon">
+                                        <i class="lni lni-camera"></i>
+                                    </div>
+                                    <div class="features_content">
+                                        <h4 class="features_title">Meal Planning</h4>
+                                        <p>Plan your weekly meals with smart suggestions based on your preferences and
+                                            available ingredients.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-7 col-sm-8">
+                                <div class="single_features mt-30 features_6 text-center wow fadeInUp"
+                                    data-wow-duration="1.3s" data-wow-delay="0.9s">
+                                    <div class="features_icon">
+                                        <i class="lni lni-camera"></i>
+                                    </div>
+                                    <div class="features_content">
+                                        <h4 class="features_title">Shopping Lists</h4>
+                                        <p>Automatically generate shopping lists based on your planned meals and missing
+                                            ingredients.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div> <!-- single features -->
+                    </div>
                 </div>
 
-                <div class="col-lg-4 col-md-7 col-sm-8">
-                    <div class="single_features mt-30 features_2 text-center wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.5s">
-                        <div class="features_icon">
-                            <i class="lni lni-restaurant"></i>
-                        </div>
-                        <div class="features_content">
-                            <h4 class="features_title">Recipe Suggestions</h4>
-                            <p>Discover tailored recipes based on your ingredients. Get options for quick meals, advanced dishes, or alternative ingredients.</p>
-                        </div>
-                    </div> <!-- single features -->
-                </div>
-
-
-
-
-                <div class="col-lg-4 col-md-7 col-sm-8">
-                    <div class="single_features mt-30 features_3 text-center wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.9s">
-                        <div class="features_icon">
-                            <i class="lni lni-heart"></i>
-                        </div>
-                        <div class="features_content">
-                            <h4 class="features_title">Personalized Experience</h4>
-                            <p>Save your favorite recipes, plan meals for the week, and get health insights for a more personalized cooking journey.</p>
-                        </div>
-                    </div> <!-- single features -->
-                </div>
-            </div> <!-- row -->
-        </div> <!-- container -->
+                <!-- Carousel Controls -->
+                <a class="carousel-control-prev" href="#featuresCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#featuresCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
     </section>
-
 
 
     <!--====== FEATURES PART ENDS ======-->
@@ -198,7 +305,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 col-md-9">
                     <div class="about_image mt-50 wow fadeInRightBig" data-wow-duration="1.3s" data-wow-delay="0.5s">
-                        <img class="image" src="MealLens/AI%20chat-1.png" alt="about MealLensAI">
+                        <img class="image" src="/assets/images/appImage/6.png" alt="about MealLensAI">
                         <img class="dots" src="assets/images/dots.svg" alt="dots">
                     </div> <!-- about image -->
                 </div>
@@ -206,7 +313,11 @@
                     <div class="about_content mt-45 wow fadeInLeftBig" data-wow-duration="1.3s" data-wow-delay="0.5s">
                         <div class="section_title">
                             <h4 class="title">Transform Your Culinary Experience!</h4>
-                            <p>MealLensAI is your ultimate kitchen companion. Whether you're a seasoned chef or a curious beginner, our innovative app empowers you to identify ingredients, explore new recipes, and plan meals effortlessly. Simply snap a photo of your ingredients and unlock a world of culinary possibilities tailored to your preferences and dietary needs. With MealLensAI, cooking has never been this fun, smart, and personalized.</p>
+                            <p>MealLensAI is your ultimate kitchen companion. Whether you're a seasoned chef or a
+                                curious beginner, our innovative app empowers you to identify ingredients, explore new
+                                recipes, and plan meals effortlessly. Simply snap a photo of your ingredients and unlock
+                                a world of culinary possibilities tailored to your preferences and dietary needs. With
+                                MealLensAI, cooking has never been this fun, smart, and personalized.</p>
                         </div>
                         <a class="main-btn" href="#">Learn More</a>
                     </div> <!-- about content -->
@@ -230,9 +341,9 @@
 
 
 
-<section id="screenshot">
+    <section id="screenshot">
 
-</section>
+    </section>
 
     <!--====== PRICNG PART START ======-->
 
@@ -242,14 +353,16 @@
                 <div class="col-lg-6">
                     <div class="section_title text-center pb-25">
                         <h4 class="title">Flexible Plans for Every Food Enthusiast</h4>
-                        <p>MealLensAI offers affordable plans designed to enhance your cooking, meal planning, and nutrition journey with smart AI tools.</p>
+                        <p>MealLensAI offers affordable plans designed to enhance your cooking, meal planning, and
+                            nutrition journey with smart AI tools.</p>
                     </div> <!-- section title -->
                 </div>
             </div> <!-- row -->
             <div class="row justify-content-center">
                 <!-- Basic Plan -->
                 <div class="col-lg-4 col-md-8 col-sm-10">
-                    <div class="single_pricing text-center pricing_color_1 mt-30 wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">
+                    <div class="single_pricing text-center pricing_color_1 mt-30 wow fadeInUp" data-wow-duration="1.3s"
+                        data-wow-delay="0.2s">
                         <div class="pricing_top_bar">
                             <h5 class="pricing_title">2 Weeks</h5>
                             <i class="lni lni-leaf"></i>
@@ -268,10 +381,11 @@
                 </div>
                 <!-- Pro Plan -->
                 <div class="col-lg-4 col-md-8 col-sm-10">
-                    <div class="single_pricing text-center pricing_active pricing_color_2 mt-30 wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.5s">
+                    <div class="single_pricing text-center pricing_active pricing_color_2 mt-30 wow fadeInUp"
+                        data-wow-duration="1.3s" data-wow-delay="0.5s">
                         <div class="pricing_top_bar">
                             <h5 class="pricing_title">Monthly</h5>
-                             <i class="lni lni-leaf"></i>
+                            <i class="lni lni-leaf"></i>
                             <span class="price">$2.00/month</span>
                         </div>
                         <div class="pricing_list">
@@ -287,7 +401,8 @@
                 </div>
                 <!-- Premium Plan -->
                 <div class="col-lg-4 col-md-8 col-sm-10">
-                    <div class="single_pricing text-center pricing_color_3 mt-30 wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.8s">
+                    <div class="single_pricing text-center pricing_color_3 mt-30 wow fadeInUp" data-wow-duration="1.3s"
+                        data-wow-delay="0.8s">
                         <div class="pricing_top_bar">
                             <h5 class="pricing_title">Yearly</h5>
                             <i class="lni lni-star"></i>
@@ -321,7 +436,7 @@
                     <img src="assets/images/shape-5.svg" alt="shape">
                 </div>
                 <div class="download_shape_2">
-                    <img src="assets/images/3.png" alt="shape">
+                    <img src="assets/images/appImage/5.png" alt="shape">
                 </div>
                 <div class="download_app_content">
                     <h3 class="download_title">Download MealLensAI</h3>
@@ -385,9 +500,9 @@
                     </div>
                 </div>
 
-                </div>
-
             </div>
+
+        </div>
         </div>
     </section>
 
@@ -402,21 +517,21 @@
                 <div class="col-lg-7">
                     <div class="footer_subscribe text-center">
                         <h3 class="subscribe_title">Stay Updated with MealLensAI</h3>
-                             <div class="subscribe_form">
+                        <div class="subscribe_form">
                             <form action="#">
                                 <input type="text" placeholder="Enter Your Email...">
                                 <button class="main-btn">Subscribe</button>
                             </form>
                         </div>
                     </div>
-<!--                    <div class="footer_social text-center mt-60">-->
-<!--                        <ul>-->
-<!--                            <li><a href="#"><span class="lni lni-facebook-filled"></span></a></li>-->
-<!--                            <li><a href="#"><span class="lni lni-twitter-original"></span></a></li>-->
-<!--                            <li><a href="#"><span class="lni lni-instagram-filled"></span></a></li>-->
-<!--                            <li><a href="#"><span class="lni lni-linkedin-original"></span></a></li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
+                    <!--                    <div class="footer_social text-center mt-60">-->
+                    <!--                        <ul>-->
+                    <!--                            <li><a href="#"><span class="lni lni-facebook-filled"></span></a></li>-->
+                    <!--                            <li><a href="#"><span class="lni lni-twitter-original"></span></a></li>-->
+                    <!--                            <li><a href="#"><span class="lni lni-instagram-filled"></span></a></li>-->
+                    <!--                            <li><a href="#"><span class="lni lni-linkedin-original"></span></a></li>-->
+                    <!--                        </ul>-->
+                    <!--                    </div>-->
                     <div class="footer_copyright text-center mt-55">
                         <p>&copy; 2024 MealLensAI. Powered by <a href="#">MealLensAI</a>.</p>
                     </div>
@@ -436,7 +551,7 @@
 
     <!--====== PART START ======-->
 
-<!--
+    <!--
     <section class="">
         <div class="container">
             <div class="row">
