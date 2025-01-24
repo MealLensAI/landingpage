@@ -10,6 +10,9 @@ COPY nginx.conf /etc/nginx/conf.d
 # Set the working directory
 WORKDIR /usr/share/nginx/html
 
+
+
+
 # Copy the landing page files into the Nginx HTML directory
 COPY landingpage/index.html ./
 COPY landingpage/README.md ./
