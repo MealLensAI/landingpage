@@ -69,6 +69,17 @@
                 padding: 0 30px;
             }
         }
+
+        @media (max-width: 768px) {
+            .header_image .image {
+                flex-direction: column; /* Stack images vertically on mobile */
+            }
+            .header_image .image img {
+                width: 100%; /* Make images full width on mobile */
+                margin-right: 0; /* Remove right margin on mobile */
+                margin-bottom: 1px; /* Add bottom margin for spacing */
+            }
+        }
     </style>
 
 </head>
@@ -177,13 +188,16 @@
                     </div>
                 </div> <!-- row -->
             </div> <!-- container -->
+
+
             <div class="header_image d-flex align-items-end">
                 <div class="image wow fadeInRightBig" data-wow-duration="1.3s" data-wow-delay="1.8s" style="display: flex;">
-                    <img src="/assets/images/appImage/3.png" height="600px" alt="MealLens App" style="margin-right: 1px;">
-                    <img src="/assets/images/appImage/2.png" height="600px" alt="MealLens App">
-                    <img src="assets/images/dots.svg" alt="decorative dots" class="dots">
+                    <img src="/assets/images/appImage/3.png" height="600px" alt="MealLens App" style="width: auto; margin-right: 1px;">
+                    <img src="/assets/images/appImage/2.png" height="600px" alt="MealLens App" style="width: auto; margin-right: 1px;">
+                    <img src="assets/images/dots.svg" alt="decorative dots" class="dots" style="width: auto;">
                 </div> <!-- image -->
             </div> <!-- header image -->
+
         </div>
 
         <!-- header hero -->
@@ -350,11 +364,15 @@
     <section id="about" class="about_area pt-30 pb-80">
         <div class="container">
             <div class="row align-items-center">
+
+
                 <div class="col-lg-6 col-md-9">
                     <div class="about_image mt-50 wow fadeInRightBig" data-wow-duration="1.3s" data-wow-delay="0.5s">
                         <img class="image" src="/assets/images/appImage/6.png" alt="about MealLensAI">
                         <img class="dots" src="assets/images/dots.svg" alt="dots">
                     </div> <!-- about image -->
+
+
                 </div>
                 <div class="col-lg-6">
                     <div class="about_content mt-45 wow fadeInLeftBig" data-wow-duration="1.3s" data-wow-delay="0.5s">
