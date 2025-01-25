@@ -542,7 +542,7 @@
 
         formData.append('image', fileInput.files[0]);
 
-        fetch('https://16.170.205.211:7017/food_detect', {
+        fetch('http://ec2-16-170-205-211.eu-north-1.compute.amazonaws.com:7017/food_detect', {
             method: 'POST',
             body: formData
         })
