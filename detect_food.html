@@ -542,7 +542,7 @@
 
         formData.append('image', fileInput.files[0]);
 
-        fetch('13.53.197.230:443/food_detect', {
+        fetch('http://13.53.197.230:443/food_detect', {
             method: 'POST',
             body: formData
         })
