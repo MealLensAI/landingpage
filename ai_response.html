@@ -437,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 formData.append('ingredient_list', ingredients);
             }
 
-            fetch('http://16.170.205.211:7017/process', {
+            fetch('https://ai-utu2.onrender.com/process', {
                 method: 'POST',
                 body: formData
             })
@@ -506,7 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('food_analysis_id', analysisId);
             formData.append('food_choice_index', suggestion);
 
-            fetch('http://16.170.205.211:7017/instructions', {
+            fetch('https://ai-utu2.onrender.com/instructions', {
                 method: 'POST',
                 body: formData
             })
