@@ -542,7 +542,7 @@
 
         formData.append('image', fileInput.files[0]);
 
-        fetch('http://13.53.197.230:443/food_detect', {
+        fetch('https://ai-utu2.onrender.com/food_detect', {
             method: 'POST',
             body: formData
         })
