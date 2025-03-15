@@ -2,20 +2,34 @@
     <!-- Existing content remains the same until the app-container -->
 
     <div class="app-container">
-       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8727235995900916"
-     crossorigin="anonymous"></script>
-<!-- meal -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-8727235995900916"
-     data-ad-slot="2906995242"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+        <a href="index.html" style="text-decoration: none; color: #FF6B6B; font-size: 1.0rem;">
+            ←Home
+        </a>
+        <h1 class="title">Food Detection</h1>
+        <div id="imageInput" class="input-section mb-4">
+            <input type="file" id="fileInput" accept="image/*" class="form-control" onchange="previewImage(event)">
+            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                <img id="imagePreview" src="" alt="Image Preview" style="display: none; width: 400px; height: 300px; object-fit: cover; border-radius: 1rem;">
+            </div>
+        </div>
+
+        <button class="btn btn-submit" onclick="uploadImage()">Submit</button>
+        <div id="loading" class="loading"></div>
+        <div id="results" class="mt-4"></div>
     </div>
 
+    <!-- Add Google AdSense code here -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8727235995900916" crossorigin="anonymous"></script>
+    <!-- meal -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-8727235995900916"
+         data-ad-slot="2906995242"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
 
 </body>
 </html>
