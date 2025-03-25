@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TPT4ET0Y2Q"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-TPT4ET0Y2Q');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Analysis App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+
+
+        .switch-button {
+    background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    transition: all 0.3s ease;
+}
+
+.switch-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+/* Active Button Style */
+.switch-button.active {
+    background: white;
+    color: #FF6B6B;
+    border: 2px solid #FF6B6B;
+    box-shadow: none;
+}
+
+.switch-button.active:hover {
+    transform: none; /* No hover effect for the active button */
+    box-shadow: none;
+}
+
+
+
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            --secondary-gradient: linear-gradient(135deg, #4ECDC4, #556270);
+            --card-gradient: linear-gradient(to right bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.8));
+            --hover-gradient: linear-gradient(135deg, #FF8E53, #FF6B6B);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1495195134817-aeb325a55b65?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat fixed;
+            padding: 2rem 1rem;
+            color: #2D3436;
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card-body{
+            padding: 1rem;
+            margin-top: 10px;
+        }
+
+        .app-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 3rem;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .form-control, .form-select {
+            background: white;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 1rem;
+            padding: 1rem;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #FF6B6B;
+            box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.2);
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #2D3436;
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-analyze {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            display: block;
+            margin: 0 auto;
+        }
+
+        .btn-analyze:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .loading {
+            display: none;
+            margin: 2rem auto;
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 107, 107, 0.3);
+            border-top: 4px solid #FF6B6B;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .suggestion-button {
+            background: white;
+            color: #FF6B6B;
+            border: 2px solid #FF6B6B;
+            border-radius: 1rem;
+            padding: 0.75rem 1.5rem;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .suggestion-button:hover {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.2);
+        }
+
+        .result-card {
+            background: var(--card-gradient);
+            border-radius: 1.5rem;
+            border: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: 100%;
+           
+        }
+
+        .result-card2{
+            margin-top: 30px;
+            background: var(--card-gradient);
+            border-radius: 1.5rem;
+            border: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: 100%;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+            color: #2D3436;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid rgba(255, 107, 107, 0.2);
+            padding-bottom: 0.75rem;
+        }
+
+        .media-preview {
+            border-radius: 1rem;
+            overflow: hidden;
+            margin: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .media-preview:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .media-preview .thumbnail {
+            width: 100%;
+            height: 000px;
+            object-fit: cover;
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .media-preview .content {
+            padding: 1rem;
+        }
+
+        .media-preview .title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2D3436;
+            margin: 0.5rem 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .media-preview .description {
+            font-size: 0.9rem;
+            color: #636E72;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 1rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 1.5rem;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .btn-analyze {
+                padding: 0.75rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+
+        .instructions {
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .instructions p {
+            margin: 0;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+
+
+    <div class="switch-container">
+        <button class="switch-button" onclick="switchTo('detect')">Detect Food</button>
+  
+        <button class="switch-button" onclick="switchTo('response')">Detect Ingred</button>
+
+
+
+</div>
+
+
+
+    <div class="container">
+
+
+
+        <div class="app-container">
+            <a href="index.html" style="text-decoration: none; color: #FF6B6B; font-size: 1.0rem;">
+                &#8592;Home
+            </a>
+            <h1 class="title">Ingredient Detection</h1>
+
+            <div class="mb-4">
+                <label for="inputType" class="form-label">How would you like to start?</label>
+                <select id="inputType" class="form-select">
+                    <option value="image">Upload a Food Image</option>
+                    <option value="ingredient_list">List Your Ingredients</option>
+                </select>
+            </div>
+
+            <div id="imageInput" class="input-section mb-4">
+                <label for="fileInput" class="form-label">Share Your Food Image</label>
+                <input type="file" id="fileInput" class="form-control" accept="image/*" onchange="previewImage(event)">
+                <div style="display: flex; justify-content: center; margin-top: 10px;">
+                    <img id="imagePreview" src="" alt="Image Preview" style="display: none; width: 400px; height: 300px; object-fit: cover; border-radius: 1rem;">
+                </div>
+            </div>
+
+            <div id="ingredientInput" class="input-section hidden mb-4">
+                <label for="ingredientTextInput" class="form-label">What ingredients do you have?</label>
+                <input type="text" id="ingredientTextInput" class="form-control"
+                       placeholder="e.g., chicken, tomatoes, basil, olive oil">
+            </div>
+
+            <button class="btn btn-analyze w-100" onclick="uploadData()">Discover Recipes</button>
+
+            <div id="loading" class="loading"></div>
+
+            <div id="results" class="mt-4"></div>
+        </div>
+    </div>
+
+    <script>
+
+        function switchTo(screen) {
+    if (screen === 'detect') {
+        window.location.href = 'detect_food.html';
+    } else if (screen === 'response') {
+        window.location.href = 'ai_response.html';
+    }
+}
+
+// Highlight the active button for the current page
+document.addEventListener('DOMContentLoaded', () => {
+    const detectButton = document.querySelector('.switch-button:nth-child(1)');
+    const responseButton = document.querySelector('.switch-button:nth-child(2)');
+
+    responseButton.classList.add('active'); // Mark this button as active
+});
+
+
+
+        let analysisId = '';
+
+        document.getElementById('inputType').addEventListener('change', function () {
+            const selectedValue = this.value;
+            document.getElementById('imageInput').classList.toggle('hidden', selectedValue !== 'image');
+            document.getElementById('ingredientInput').classList.toggle('hidden', selectedValue !== 'ingredient_list');
+        });
+
+        function getYouTubeVideoId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function uploadData() {
+            const inputType = document.getElementById('inputType').value;
+            const loading = document.getElementById('loading');
+            const resultsDiv = document.getElementById('results');
+            const formData = new FormData();
+
+            loading.style.display = 'block';
+            resultsDiv.innerHTML = '';
+
+            if (inputType === 'image') {
+                const fileInput = document.getElementById('fileInput');
+                if (!fileInput.files.length) {
+                    alert('Please select an image file.');
+                    loading.style.display = 'none';
+                    return;
+                }
+                formData.append('image_or_ingredient_list', 'image');
+                formData.append('image', fileInput.files[0]);
+            } else {
+                const ingredientInput = document.getElementById('ingredientTextInput');
+                const ingredients = ingredientInput.value.trim();
+                if (!ingredients) {
+                    alert('Please enter ingredients.');
+                    loading.style.display = 'none';
+                    return;
+                }
+                formData.append('image_or_ingredient_list', 'ingredient_list');
+                formData.append('ingredient_list', ingredients);
+            }
+
+            fetch('https://ai-utu2.onrender.com/process', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    loading.style.display = 'none';
+
+                    if (data.error) {
+                        resultsDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                    } else {
+                        analysisId = data.analysis_id;
+
+                        const analysisItems = data.response
+                            .map((item, index) => `<li class="mb-3">${item.trim()}</li>`)
+                            .join('');
+
+                        resultsDiv.innerHTML = `
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="result-card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">AI Detected Ingredient</h5>
+                                            <ol class="ps-4">${analysisItems}</ol>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="result-card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">AI Recipe Suggestions</h5>
+                                            <div id="suggestions" class="d-flex flex-wrap gap-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                        const suggestionsDiv = document.getElementById('suggestions');
+                        data.food_suggestions.forEach(suggestion => {
+                            const button = document.createElement('button');
+                            button.textContent = suggestion;
+                            button.className = 'suggestion-button';
+                            button.onclick = () => handleSuggestionClick(suggestion);
+                            suggestionsDiv.appendChild(button);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    loading.style.display = 'none';
+                    resultsDiv.innerHTML = `<div class="alert alert-danger">An error occurred. Please try again.</div>`;
+                });
+        }
+
+        function handleSuggestionClick(suggestion) {
+            fetchInstructions(analysisId, suggestion);
+        }
+
+        function fetchInstructions(analysisId, suggestion) {
+            const loading = document.getElementById('loading');
+            const resultsDiv = document.getElementById('results');
+
+            loading.style.display = 'block';
+
+            const formData = new FormData();
+            formData.append('food_analysis_id', analysisId);
+            formData.append('food_choice_index', suggestion);
+
+            fetch('https://ai-utu2.onrender.com/instructions', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    loading.style.display = 'none';
+
+                    // Structure the cooking instructions
+                    let instructions = data.instructions;
+
+                    // Replace double asterisks with bold tags and add line breaks
+                    instructions = instructions.replace(/\*\*(.*?)\*\*/g, '<br><strong>$1</strong><br>');
+
+                    // Replace single asterisks with paragraph tags
+                    instructions = instructions.replace(/\*\s*(.*?)\s*\*/g, '<p>$1</p>');
+
+                    // Replace numbered items with line breaks
+                    instructions = instructions.replace(/(\d+\.)/g, '<br>$1');
+
+                    // Create structured HTML
+                    const structuredInstructions = `
+                        <div class="result-card2">
+                            <div class="card-body">
+                                <h5 class="card-title">Cooking Instructions</h5>
+                                <div class="instructions">${instructions}</div>
+                            </div>
+                        </div>
+
+
+                         <div class="row g-4 mt-4">
+                            <div class="col-md-6">
+                                <div class="result-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Helpful Resources</h5>
+                                        <h6 class="fw-bold mb-3">Video Tutorials</h6>
+                                        ${data.YoutubeSearch && data.YoutubeSearch.length > 0 ?
+                                            data.YoutubeSearch.map(item => {
+                                                const videoId = getYouTubeVideoId(item.link);
+                                                return videoId ? `
+                                                    <div class="video-container">
+                                                        <iframe
+                                                            src="https://www.youtube.com/embed/${videoId}"
+                                                            title="${item.title}"
+                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                            allowfullscreen>
+                                                        </iframe>
+                                                    </div>
+                                                ` : `
+                                                    <div class="media-preview">
+                                                        <div class="content">
+                                                            <a href="${item.link}" target="_blank" class="text-decoration-none">
+                                                                <h3 class="title">${item.title}</h3>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                `;
+                                            }).join('') : '<p>No video tutorials available.</p>'}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="result-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Helpful Resources</h5>
+                                        <h6 class="fw-bold mb-3">Recommended Articles</h6>
+                                        ${data.GoogleSearch && data.GoogleSearch.length > 0 ?
+                                            data.GoogleSearch.map(item => `
+                                                <div class="media-preview">
+                                                    <div class="content">
+                                                        <a href="${item.link}" target="_blank" class="text-decoration-none">
+                                                            <h3 class="title">${item.title}</h3>
+                                                        </a>
+                                                        <p class="description">${item.description}</p>
+                                                    </div>
+                                                </div>
+                                            `).join('') : '<p>No articles available.</p>'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    resultsDiv.innerHTML += structuredInstructions;
+                })
+                .catch(error => {
+                    console.error('Error fetching instructions:', error);
+                    loading.style.display = 'none';
+                    resultsDiv.innerHTML += `<div class="alert alert-danger mt-4">Failed to fetch instructions. Please try again.</div>`;
+                });
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('imagePreview');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result; // Set the image source to the file's data URL
+                    preview.style.display = 'block'; // Show the image preview
+                }
+                reader.readAsDataURL(file); // Read the file as a data URL
+            } else {
+                preview.src = ''; // Clear the preview if no file is selected
+                preview.style.display = 'none'; // Hide the image preview
+            }
+        }
+    </script>
+
+</body>
+</html>
