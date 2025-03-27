@@ -350,8 +350,8 @@
         // Check authentication state
         auth.onAuthStateChanged((user) => {
             if (!user) {
-                // If user is not logged in, redirect to index.html
-                window.location.href = 'index.html';
+                // If user is not logged in, redirect to landingpage.html
+                window.location.href = 'landingpage.html';
                 return;
             }
             // User is logged in, show the content
@@ -378,9 +378,14 @@
 
 
         <div class="app-container">
-            <a href="index.html" style="text-decoration: none; color: #FF6B6B; font-size: 1.0rem;">
-                &#8592;Home
-            </a>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <a href="landingpage.html" style="text-decoration: none; color: #FF6B6B; font-size: 1.0rem;">
+                    &#8592;Home
+                </a>
+                <button onclick="handleSignOut()" style="background: none; border: none; color: #FF6B6B; font-size: 1.0rem; cursor: pointer;">
+                    Sign Out
+                </button>
+            </div>
             <h1 class="title">Ingredient Detection</h1>
 
             <div class="mb-4">
@@ -653,6 +658,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 preview.src = ''; // Clear the preview if no file is selected
                 preview.style.display = 'none'; // Hide the image preview
             }
+        }
+
+        // Add this function for sign out
+        function handleSignOut() {
+            auth.signOut().then(() => {
+                window.location.href = 'landingpage.html';
+            }).catch((error) => {
+                console.error('Error signing out:', error);
+            });
         }
     </script>
 
