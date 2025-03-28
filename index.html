@@ -204,7 +204,7 @@
                                         href="#features">Explore Features</a></li>
 
 
-                                <li><a class="main-btn main-btn-2 wow fadeInUp" data-wow-delay="1.4s" href="ai_response.html">Try <b>MealLensAI</b> Now</a></li>
+                                <li><a class="main-btn main-btn-2 wow fadeInUp" data-wow-delay="1.4s" onclick="handleTryMealLensAI(event)">Try <b>MealLensAI</b> Now</a></li>
                             </ul>
                         </div> <!-- header hero content -->
                     </div>
@@ -939,6 +939,21 @@
 
     <!--====== Main js ======-->
     <script src="assets/js/main.js"></script>
+
+    <script>
+        // Add this new function to handle the Try MealLensAI button click
+        window.handleTryMealLensAI = function(event) {
+            event.preventDefault();
+            const user = auth.currentUser;
+            if (!user) {
+                // If user is not logged in, trigger signup
+                handleAuth('signup');
+            } else {
+                // If user is logged in, redirect to ai_response.html
+                window.location.href = 'ai_response.html';
+            }
+        };
+    </script>
 
 </body>
 
