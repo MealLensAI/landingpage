@@ -72,17 +72,136 @@
     .features_area .carousel {
         padding: 0 50px;
     }
+
+    /* New responsive styles */
+    .hero-video {
+        height: 450px;
+        width: auto;
+        margin-right: 1px;
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+    .header_image {
+        display: flex;
+        align-items: flex-end;
+        margin-left: -50px; /* Align video with text on desktop */
+    }
+
+    /* Desktop alignment styles */
+    @media (min-width: 992px) {
+        .header_hero {
+            position: relative;
+            padding: 0 80px; /* Add padding to the entire hero section */
+        }
+
+        .header_hero_content {
+            margin-left: 0; /* Reset any existing margin */
+        }
+
+        .header_image {
+            position: absolute;
+            right: 10px; /* Position video 100px from the right */
+            top: 32%;
+            transform: translateY(-50%);
+            margin-left: 0; /* Reset the previous margin */
+        }
+    }
+
+    @media (max-width: 991px) {
+        .header_hero {
+            flex-direction: column;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .header_hero_content {
+            margin-bottom: 2rem;
+        }
+
+        .header_image {
+            width: 100%;
+            justify-content: center;
+            margin-top: 2rem;
+            margin-left: 0;
+            position: relative; /* Reset position for mobile */
+            right: auto;
+            top: auto;
+            transform: none;
+        }
+
+        .hero-video {
+            height: 350px;
+            width: auto;
+        }
+
+        .header_title {
+            font-size: 2rem;
+        }
+
+        .header_hero_content p {
+            font-size: 1rem;
+        }
+    }
+
     @media (max-width: 768px) {
         .features_area .carousel {
             padding: 0 30px;
         }
+
         .header_image .image {
             flex-direction: column;
+            align-items: center;
         }
+
         .header_image .image img {
             width: 100%;
             margin-right: 0;
             margin-bottom: 1px;
+        }
+
+        .hero-video {
+            height: 300px; /* Increased from 250px */
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .header_title {
+            font-size: 1.75rem;
+        }
+
+        .header_hero_content p {
+            font-size: 0.9rem;
+        }
+
+        .header_hero_content ul {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header_hero_content ul li {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .main-btn, .main-btn-2 {
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-video {
+            height: 250px; /* Increased from 200px */
+        }
+
+        .header_title {
+            font-size: 1.5rem;
+        }
+
+        .header_hero_content p {
+            font-size: 0.85rem;
         }
     }
 </style>
@@ -167,7 +286,7 @@
             <img class="shape shape-2" src="assets/images/shape-2.svg" alt="shape">
             <img class="shape shape-3" src="assets/images/shape-3.svg" alt="shape">
 
-            <div class="container"style="display: flex; margin-left: 100px;>
+            <div class="container-fluid">
                 <div class="row align-items-center">
                     <div class="col-lg-6">
                         <div class="header_hero_content mt-45">
@@ -186,7 +305,6 @@
                                 <li><a class="main-btn wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="1s"
                                         href="#features">Explore Features</a></li>
 
-
                                 <li><a class="main-btn main-btn-2 wow fadeInUp" data-wow-duration="1.3s"
                                         data-wow-delay="1.4s" href="ai_response.html">Test Web App Now</a></li>
                             </ul>
@@ -195,17 +313,15 @@
                 </div> <!-- row -->
             </div> <!-- container -->
 
-
             <div class="header_image d-flex align-items-end">
-                <div class="image wow fadeInRightBig" data-wow-duration="1.3s" data-wow-delay="1.8s" style="display: flex; margin-left: -10px;">
-                    <video autoplay loop muted playsinline controls oncontextmenu="return false;" style="height: 450px; width: auto; margin-right: 1px;">
+                <div class="image wow fadeInRightBig" data-wow-duration="1.3s" data-wow-delay="1.8s" style="display: flex;">
+                    <video autoplay loop muted playsinline controls oncontextmenu="return false;" class="hero-video">
                         <source src="assets/okay.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
                     <img src="assets/images/dots.svg" alt="decorative dots" class="dots" style="width: auto;">
                 </div> <!-- image -->
             </div> <!-- header image -->
-
         </div>
 
         <!-- header hero -->
