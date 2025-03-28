@@ -326,8 +326,41 @@
     </style>
 </head>
 <body>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
 
+    <script>
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfeNB97dUeCtbSBTqTa_oZLNFUoDRCpLg",
+            authDomain: "meallensai-e84bc.firebaseapp.com",
+            projectId: "meallensai-e84bc",
+            storageBucket: "meallensai-e84bc.firebasestorage.app",
+            messagingSenderId: "931517253636",
+            appId: "1:931517253636:web:344608943b23698df08d51",
+            measurementId: "G-XV5LYL1RYJ"
+        };
 
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Check authentication state
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                // If user is not logged in, redirect to landingpage.html
+                window.location.href = 'landingpage.html';
+                return;
+            }
+            // User is logged in, show the content
+            document.body.style.display = 'block';
+        });
+
+        // Initially hide the body content
+        document.body.style.display = 'none';
+    </script>
 
     <div class="switch-container">
         <button class="switch-button" onclick="switchTo('detect')">Detect Food</button>
@@ -345,15 +378,20 @@
 
 
         <div class="app-container">
-            <a href="index.html" style="text-decoration: none; color: #FF6B6B; font-size: 1.0rem;">
-                &#8592;Home
-            </a>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <a href="landingpage.html" style="text-decoration: none; color: #FF6B6B; font-size: 1.0rem;">
+                    &#8592;Home
+                </a>
+                <button onclick="handleSignOut()" style="background: none; border: none; color: #FF6B6B; font-size: 1.0rem; cursor: pointer;">
+                    Sign Out
+                </button>
+            </div>
             <h1 class="title">Ingredient Detection</h1>
 
             <div class="mb-4">
                 <label for="inputType" class="form-label">How would you like to start?</label>
                 <select id="inputType" class="form-select">
-                    <option value="image">Upload a Food Image</option>
+                    <option value="image">Snap or Upload Food Image </option>
                     <option value="ingredient_list">List Your Ingredients</option>
                 </select>
             </div>
@@ -620,6 +658,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 preview.src = ''; // Clear the preview if no file is selected
                 preview.style.display = 'none'; // Hide the image preview
             }
+        }
+
+        // Add this function for sign out
+        function handleSignOut() {
+            auth.signOut().then(() => {
+                window.location.href = 'landingpage.html';
+            }).catch((error) => {
+                console.error('Error signing out:', error);
+            });
         }
     </script>
 

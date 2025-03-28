@@ -172,7 +172,6 @@
                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
                                             <div class="dropdown-item user-email" id="userEmail"></div>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#" id="profileDetails">Profile Details</a>
                                             <a class="dropdown-item" href="#" onclick="handleSignOut()">Sign Out</a>
                                         </div>
                                     </div>
@@ -306,10 +305,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-
 
 
                         </div>
@@ -785,6 +780,8 @@
                 .then((result) => {
                     console.log(`Successfully ${mode}:`, result.user.email);
                     updateUIForUser(result.user);
+                    // Redirect to ai_response.html after successful authentication
+                    window.location.href = 'ai_response.html';
                 })
                 .catch((error) => {
                     if (error.code === 'auth/unauthorized-domain') {

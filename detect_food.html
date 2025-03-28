@@ -460,199 +460,247 @@
 
 </head>
 <body>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
 
+    <script>
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfeNB97dUeCtbSBTqTa_oZLNFUoDRCpLg",
+            authDomain: "meallensai-e84bc.firebaseapp.com",
+            projectId: "meallensai-e84bc",
+            storageBucket: "meallensai-e84bc.firebasestorage.app",
+            messagingSenderId: "931517253636",
+            appId: "1:931517253636:web:344608943b23698df08d51",
+            measurementId: "G-XV5LYL1RYJ"
+        };
 
-<div class="switch-container">
-    <button class="switch-button" onclick="switchTo('detect')">Detect Food</button>
-  
-    <button class="switch-button" onclick="switchTo('response')">Detect Ingred</button>
-  
-</div>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
+        // Check authentication state
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                // If user is not logged in, redirect to landingpage.html
+                window.location.href = 'landingpage.html';
+                return;
+            }
+            // User is logged in, show the content
+            document.body.style.display = 'block';
+        });
 
-<div class="app-container">
-    <a href="index.html" style="text-decoration: none; color: #FF6B6B; font-size: 1.0rem;">
-        &#8592;Home
-    </a>
-    <h1 class="title">Food Detection</h1>
-    <div id="imageInput" class="input-section mb-4">
-        <input type="file" id="fileInput" accept="image/*" class="form-control" onchange="previewImage(event)">
-        <div style="display: flex; justify-content: center; margin-top: 10px;">
-            <img id="imagePreview" src="" alt="Image Preview" style="display: none; width: 400px; height: 300px; object-fit: cover; border-radius: 1rem;">
-        </div>
+        // Initially hide the body content
+        document.body.style.display = 'none';
+
+        // Sign out function
+        function handleSignOut() {
+            auth.signOut().then(() => {
+                window.location.href = 'landingpage.html';
+            }).catch((error) => {
+                console.error('Error signing out:', error);
+            });
+        }
+    </script>
+
+    <div class="switch-container">
+        <button class="switch-button" onclick="switchTo('detect')">Detect Food</button>
+      
+        <button class="switch-button" onclick="switchTo('response')">Detect Ingred</button>
+      
     </div>
 
-    <button class="btn btn-submit" onclick="uploadImage()">Submit</button>
-    <div id="loading" class="loading"></div>
-    <div id="results" class="mt-4"></div>
-</div>
+
+    <div class="app-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <a href="landingpage.html" style="text-decoration: none; color: #FF6B6B; font-size: 1.0rem;">
+                &#8592;Home
+            </a>
+            <button onclick="handleSignOut()" style="background: none; border: none; color: #FF6B6B; font-size: 1.0rem; cursor: pointer;">
+                Sign Out
+            </button>
+        </div>
+        <h1 class="title">Food Detection</h1>
+        <div id="imageInput" class="input-section mb-4">
+            <input type="file" id="fileInput" accept="image/*" class="form-control" onchange="previewImage(event)">
+            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                <img id="imagePreview" src="" alt="Image Preview" style="display: none; width: 400px; height: 300px; object-fit: cover; border-radius: 1rem;">
+            </div>
+        </div>
+
+        <button class="btn btn-submit" onclick="uploadImage()">Submit</button>
+        <div id="loading" class="loading"></div>
+        <div id="results" class="mt-4"></div>
+    </div>
 
 
-<script>
-    function switchTo(screen) {
-        if (screen === 'detect') {
-            window.location.href = 'detect_food.html';
-        } else if (screen === 'response') {
-            window.location.href = 'ai_response.html';
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const detectButton = document.querySelector('.switch-button:nth-child(1)');
-        const responseButton = document.querySelector('.switch-button:nth-child(2)');
-        detectButton.classList.add('active'); // Mark this button as active
-    });
-
-    function getYouTubeVideoId(url) {
-        if (!url) {
-            console.error('Invalid URL:', url);
-            return null;
-        }
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-        const match = url.match(regExp);
-        return (match && match[2] && match[2].length === 11) ? match[2] : null;
-    }
-
-    function previewImage(event) {
-        const file = event.target.files[0];
-        const preview = document.getElementById('imagePreview');
-
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                preview.src = e.target.result; // Set the image source to the file's data URL
-                preview.style.display = 'block'; // Show the image preview
+    <script>
+        function switchTo(screen) {
+            if (screen === 'detect') {
+                window.location.href = 'detect_food.html';
+            } else if (screen === 'response') {
+                window.location.href = 'ai_response.html';
             }
-            reader.readAsDataURL(file); // Read the file as a data URL
-        } else {
-            preview.src = ''; // Clear the preview if no file is selected
-            preview.style.display = 'none'; // Hide the image preview
-        }
-    }
-
-    function uploadImage() {
-        const loading = document.getElementById('loading');
-        const resultsDiv = document.getElementById('results');
-        const formData = new FormData();
-        const fileInput = document.getElementById('fileInput');
-
-        loading.style.display = 'block';
-        resultsDiv.innerHTML = ''; // Clear previous results
-
-        if (!fileInput.files.length) {
-            alert('Please select an image file.');
-            loading.style.display = 'none';
-            return;
         }
 
-        formData.append('image', fileInput.files[0]);
+        document.addEventListener('DOMContentLoaded', () => {
+            const detectButton = document.querySelector('.switch-button:nth-child(1)');
+            const responseButton = document.querySelector('.switch-button:nth-child(2)');
+            detectButton.classList.add('active'); // Mark this button as active
+        });
 
-        fetch('https://ai-utu2.onrender.com/food_detect', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            loading.style.display = 'none';
+        function getYouTubeVideoId(url) {
+            if (!url) {
+                console.error('Invalid URL:', url);
+                return null;
+            }
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2] && match[2].length === 11) ? match[2] : null;
+        }
 
-            if (data.error) {
-                resultsDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('imagePreview');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result; // Set the image source to the file's data URL
+                    preview.style.display = 'block'; // Show the image preview
+                }
+                reader.readAsDataURL(file); // Read the file as a data URL
+            } else {
+                preview.src = ''; // Clear the preview if no file is selected
+                preview.style.display = 'none'; // Hide the image preview
+            }
+        }
+
+        function uploadImage() {
+            const loading = document.getElementById('loading');
+            const resultsDiv = document.getElementById('results');
+            const formData = new FormData();
+            const fileInput = document.getElementById('fileInput');
+
+            loading.style.display = 'block';
+            resultsDiv.innerHTML = ''; // Clear previous results
+
+            if (!fileInput.files.length) {
+                alert('Please select an image file.');
+                loading.style.display = 'none';
                 return;
             }
 
-            // Structure the cooking instructions
-            let instructions = data.instructions;
+            formData.append('image', fileInput.files[0]);
 
-            // Replace double asterisks with bold tags and add line breaks
-            instructions = instructions.replace(/\*\*(.*?)\*\*/g, '<br><strong>$1</strong><br>');
+            fetch('https://ai-utu2.onrender.com/food_detect', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loading.style.display = 'none';
 
-            // Replace single asterisks with paragraph tags
-            instructions = instructions.replace(/\*\s*(.*?)\s*\*/g, '<p>$1</p>');
+                if (data.error) {
+                    resultsDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                    return;
+                }
 
-            // Replace numbered items with line breaks
-            instructions = instructions.replace(/(\d+\.)/g, '<br>$1');
+                // Structure the cooking instructions
+                let instructions = data.instructions;
 
-            // Create structured HTML
-            const structuredInstructions = `
-                <div class="result-card2">
-                    <div class="card-body">
-                        <h5 class="card-title">Cooking Instructions</h5>
-                        <div class="instructions">${instructions}</div>
+                // Replace double asterisks with bold tags and add line breaks
+                instructions = instructions.replace(/\*\*(.*?)\*\*/g, '<br><strong>$1</strong><br>');
+
+                // Replace single asterisks with paragraph tags
+                instructions = instructions.replace(/\*\s*(.*?)\s*\*/g, '<p>$1</p>');
+
+                // Replace numbered items with line breaks
+                instructions = instructions.replace(/(\d+\.)/g, '<br>$1');
+
+                // Create structured HTML
+                const structuredInstructions = `
+                    <div class="result-card2">
+                        <div class="card-body">
+                            <h5 class="card-title">Cooking Instructions</h5>
+                            <div class="instructions">${instructions}</div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="row g-4 mt-4">
-                    <div class="col-md-6">
-                        <div class="result-card">
-                            <div class="card-body">
-                                <h5 class="card-title">Helpful Resources</h5>
-                                <h6 class="fw-bold mb-3">Video Tutorials</h6>
-                                ${data.YoutubeSearch && data.YoutubeSearch[0] && data.YoutubeSearch[0].length > 0 ?
-                                    data.YoutubeSearch[0].map(item => {
-                                        const videoId = getYouTubeVideoId(item.link);
-                                        return videoId ? `
-                                            <div class="video-container">
-                                                <iframe
-                                                    src="https://www.youtube.com/embed/${videoId}"
-                                                    title="${item.title}"
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                    allowfullscreen>
-                                                </iframe>
-                                            </div>
-                                        ` : `
+                    <div class="row g-4 mt-4">
+                        <div class="col-md-6">
+                            <div class="result-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Helpful Resources</h5>
+                                    <h6 class="fw-bold mb-3">Video Tutorials</h6>
+                                    ${data.YoutubeSearch && data.YoutubeSearch[0] && data.YoutubeSearch[0].length > 0 ?
+                                        data.YoutubeSearch[0].map(item => {
+                                            const videoId = getYouTubeVideoId(item.link);
+                                            return videoId ? `
+                                                <div class="video-container">
+                                                    <iframe
+                                                        src="https://www.youtube.com/embed/${videoId}"
+                                                        title="${item.title}"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowfullscreen>
+                                                    </iframe>
+                                                </div>
+                                            ` : `
+                                                <div class="media-preview">
+                                                    <div class="content">
+                                                        <a href="${item.link}" target="_blank" class="text-decoration-none">
+                                                            <h3 class="title">${item.title}</h3>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            `;
+                                        }).join('') : '<p>No video tutorials available.</p>'}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="result-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Helpful Resources</h5>
+                                    <h6 class="fw-bold mb-3">Recommended Articles</h6>
+                                    ${data.GoogleSearch && data.GoogleSearch[0] && data.GoogleSearch[0].length > 0 ?
+                                        data.GoogleSearch[0].map(item => `
                                             <div class="media-preview">
                                                 <div class="content">
                                                     <a href="${item.link}" target="_blank" class="text-decoration-none">
                                                         <h3 class="title">${item.title}</h3>
                                                     </a>
+                                                    <p class="description">${item.description}</p>
                                                 </div>
                                             </div>
-                                        `;
-                                    }).join('') : '<p>No video tutorials available.</p>'}
+                                        `).join('') : '<p>No articles available.</p>'}
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="result-card">
-                            <div class="card-body">
-                                <h5 class="card-title">Helpful Resources</h5>
-                                <h6 class="fw-bold mb-3">Recommended Articles</h6>
-                                ${data.GoogleSearch && data.GoogleSearch[0] && data.GoogleSearch[0].length > 0 ?
-                                    data.GoogleSearch[0].map(item => `
-                                        <div class="media-preview">
-                                            <div class="content">
-                                                <a href="${item.link}" target="_blank" class="text-decoration-none">
-                                                    <h3 class="title">${item.title}</h3>
-                                                </a>
-                                                <p class="description">${item.description}</p>
-                                            </div>
-                                        </div>
-                                    `).join('') : '<p>No articles available.</p>'}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+                `;
 
-            resultsDiv.innerHTML += structuredInstructions;
-        })
-        .catch(error => {
-            console.error('Error fetching instructions:', error);
-            loading.style.display = 'none';
-            resultsDiv.innerHTML += `<div class="alert alert-danger mt-4">Failed to fetch instructions. Please try again.</div>`;
-        });
-    }
-</script>
+                resultsDiv.innerHTML += structuredInstructions;
+            })
+            .catch(error => {
+                console.error('Error fetching instructions:', error);
+                loading.style.display = 'none';
+                resultsDiv.innerHTML += `<div class="alert alert-danger mt-4">Failed to fetch instructions. Please try again.</div>`;
+            });
+        }
+    </script>
 
 
-<amp-ad width="100vw" height="320"
-     type="adsense"
-     data-ad-client="ca-pub-8727235995900916"
-     data-ad-slot="7558129658"
-     data-auto-format="rspv"
-     data-full-width="">
-  <div overflow=""></div>
-</amp-ad>
+    <amp-ad width="100vw" height="320"
+         type="adsense"
+         data-ad-client="ca-pub-8727235995900916"
+         data-ad-slot="7558129658"
+         data-auto-format="rspv"
+         data-full-width="">
+      <div overflow=""></div>
+    </amp-ad>
 </body>
 
 
