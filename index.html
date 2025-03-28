@@ -9,6 +9,8 @@
 
 <!--    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8727235995900916"-->
 <!--     crossorigin="anonymous"></script>-->
+<!--    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8727235995900916"-->
+<!--     crossorigin="anonymous"></script>-->
 <!--    <meta name="google-adsense-account" content="ca-pub-8727235995900916">-->
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-TPT4ET0Y2Q"></script>
@@ -786,7 +788,7 @@
                 })
                 .catch((error) => {
                     if (error.code === 'auth/unauthorized-domain') {
-                        alert('Please add localhost:8000 to authorized domains in Firebase Console:\n1. Go to Firebase Console\n2. Select Authentication\n3. Sign-in Methods tab\n4. Add domain under Authorized domains');
+                        alert('This domain is not authorized. If you are the administrator, please ensure meallensai.com is added to the authorized domains in Firebase Console.');
                     } else {
                         alert(`Error during ${mode}: ${error.message}`);
                     }
