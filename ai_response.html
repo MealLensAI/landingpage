@@ -497,7 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 formData.append('ingredient_list', ingredients);
             }
 
-            fetch('sepiaboa.onpella.app/process', {
+            fetch('https://sepiaboa.onpella.app/process', {
                 method: 'POST',
                 body: formData
             })
@@ -566,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('food_analysis_id', analysisId);
             formData.append('food_choice_index', suggestion);
 
-            fetch('sepiaboa.onpella.app/instructions', {
+            fetch('https://sepiaboa.onpella.app/instructions', {
                 method: 'POST',
                 body: formData
             })
