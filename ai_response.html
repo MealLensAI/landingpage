@@ -497,7 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 formData.append('ingredient_list', ingredients);
             }
 
-            fetch('https://ai-utu2.onrender.com/process', {
+            fetch('sepiaboa.onpella.app/process', {
                 method: 'POST',
                 body: formData
             })
@@ -566,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('food_analysis_id', analysisId);
             formData.append('food_choice_index', suggestion);
 
-            fetch('https://ai-utu2.onrender.com/instructions', {
+            fetch('sepiaboa.onpella.app/instructions', {
                 method: 'POST',
                 body: formData
             })
