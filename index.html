@@ -653,45 +653,52 @@
 
     <!--====== BLOG PART ENDS ======-->
 
+
+    <!--====== FOOTER PART START ======-->
+
+    <section id="footer" class="footer_area pt-75 pb-80" style="background: linear-gradient(135deg, #FF6B6B 100%);">
+
+
+
     <!--====== FEEDBACK FORM PART START ======-->
     <section class="feedback_area pt-75 pb-80">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="section_title text-center pb-25">
-                        <h4 class="title">Share Your Experience</h4>
-                        <p>Help us improve by sharing your thoughts about MealLensAI</p>
+                        <h4 class="title">Share Your Feedback</h4>
+                        <p style="color: white;">Help us improve by sharing your thoughts about MealLensAI</p>
                     </div>
                 </div>
             </div>
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="feedback_form bg-white p-4 rounded shadow" style="border: 1px solid #ddd;">
-                        <form id="feedbackForm" onsubmit="return handleFeedbackSubmit(event)">
+                        <form id="feedbackForm" action="https://docs.google.com/forms/d/e/1FAIpQLSfmzSzyjg7h6GYzDLLI-uPLGjjMI3VqVj-hmwpvygqROo1NvQ/formResponse" method="POST" onsubmit="return handleFeedbackSubmit(event)">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="name" placeholder="Your Name" required>
+                                        <input type="text" class="form-control" name="entry.1638190700" id="name" placeholder="Your Name" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="email" class="form-control" id="email" placeholder="Your Email" required>
+                                        <input type="email" class="form-control" name="entry.665398406" id="email" placeholder="Your Email" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <select class="form-control" id="rating" required>
+                                <select class="form-control" name="entry.1853582846" id="rating" required>
                                     <option value="">Select Rating</option>
-                                    <option value="5">5 Stars - Excellent</option>
-                                    <option value="4">4 Stars - Very Good</option>
-                                    <option value="3">3 Stars - Good</option>
-                                    <option value="2">2 Stars - Fair</option>
-                                    <option value="1">1 Star - Poor</option>
+                                    <option value="Option 1">5 Stars - Excellent</option>
+                                    <option value="Option 2">4 Stars - Very Good</option>
+                                    <option value="Option 3">3 Stars - Good</option>
+                                    <option value="Option 4">2 Stars - Fair</option>
+                                    <option value="Option 5">1 Star - Poor</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <textarea class="form-control" id="feedback" rows="4" placeholder="Tell us about your experience with MealLensAI..." required></textarea>
+                                <textarea class="form-control" name="entry.2126368368" id="feedback" rows="4" placeholder="Tell us about your experience with MealLensAI..." required></textarea>
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="main-btn">Submit Feedback</button>
@@ -703,10 +710,7 @@
         </div>
     </section>
     <!--====== FEEDBACK FORM PART ENDS ======-->
-
-    <!--====== FOOTER PART START ======-->
-
-    <section id="footer" class="footer_area pt-75 pb-80" style="background: linear-gradient(135deg, #FF8E53 0%, #FF6B6B 100%);">
+        
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-7">
@@ -1010,17 +1014,23 @@
         window.handleFeedbackSubmit = function(event) {
             event.preventDefault();
             
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const rating = document.getElementById('rating').value;
-            const feedback = document.getElementById('feedback').value;
-
-            // Here you would typically send this data to your backend
-            // For now, we'll just show a success message
-            alert('Thank you for your feedback! We appreciate your input.');
+            const form = document.getElementById('feedbackForm');
+            const formData = new FormData(form);
             
-            // Reset the form
-            document.getElementById('feedbackForm').reset();
+            // Submit to Google Form
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                mode: 'no-cors'
+            })
+            .then(() => {
+                alert('Thank you for your feedback! We appreciate your input.');
+                form.reset();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error submitting your feedback. Please try again.');
+            });
             
             return false;
         };
