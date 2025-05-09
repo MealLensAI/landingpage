@@ -244,6 +244,9 @@
                                         <li class="nav-item">
                                             <a class="page-scroll" href="#pricing">Pricing</a>
                                         </li>
+                                        <li class="nav-item">
+                                            <a class="page-scroll" href="#" onclick="openDonateModal()" style="cursor: pointer;">Donate</a>
+                                        </li>
 <!--                                        <li class="nav-item">-->
 <!--                                            <a class="page-scroll" href="#blog">Join Wait List</a>-->
 <!--                                        </li>-->
@@ -1035,6 +1038,114 @@
             return false;
         };
     </script>
+
+    <!-- Donate Modal -->
+    <div class="modal fade" id="donateModal" tabindex="-1" role="dialog" aria-labelledby="donateModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="donateModalLabel">Donate to Support MealLensAI</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="donateForm">
+                        <div class="form-group">
+                            <label for="donorName">Your Name</label>
+                            <input type="text" class="form-control" id="donorName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="donorEmail">Email Address</label>
+                            <input type="email" class="form-control" id="donorEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="donationAmount">Donation Amount (KES)</label>
+                            <input type="number" class="form-control" id="donationAmount" min="1000" value="1000" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="processDonation()">Donate Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Paystack Script -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script>
+        function openDonateModal() {
+            $('#donateModal').modal('show');
+        }
+
+        function processDonation() {
+            const name = document.getElementById('donorName').value;
+            const email = document.getElementById('donorEmail').value;
+            const amount = document.getElementById('donationAmount').value;
+
+            if (!name || !email || !amount) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const handler = PaystackPop.setup({
+                key: 'pk_live_5f7de652daf3ea53dc685902c5f28f0a2063bc33',
+                email: email,
+                amount: amount * 100, // Convert to kobo
+                currency: 'KES',
+                ref: ''+Math.floor((Math.random() * 1000000000) + 1),
+                metadata: {
+                    custom_fields: [
+                        {
+                            display_name: "Donor Name",
+                            variable_name: "donor_name",
+                            value: name
+                        }
+                    ]
+                },
+                callback: function(response){
+                    // Handle successful payment
+                    alert('Thank you for your donation! Reference: ' + response.reference);
+                    $('#donateModal').modal('hide');
+                    document.getElementById('donateForm').reset();
+                },
+                onClose: function(){
+                    alert('Transaction was not completed, window closed.');
+                }
+            });
+            handler.openIframe();
+        }
+    </script>
+
+    <style>
+        .modal-content {
+            border-radius: 15px;
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #FF6B6B 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        .modal-title {
+            font-weight: 600;
+        }
+        .close {
+            color: white;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B6B 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #ff5252 100%);
+        }
+        .form-control:focus {
+            border-color: #FF6B6B;
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25);
+        }
+    </style>
 
 </body>
 
