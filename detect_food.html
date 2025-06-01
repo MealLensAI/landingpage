@@ -139,10 +139,44 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        .netflix-loading-bar {
+            display: none;
+            width: 100%;
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 2px;
+            margin: 1rem 0;
+            overflow: hidden;
+            position: relative;
         }
+
+        .netflix-loading-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 30%;
+            background: linear-gradient(90deg, #FF6B6B, #FF8E53);
+            animation: netflix-loading 1.5s ease-in-out infinite;
+            border-radius: 2px;
+        }
+
+        @keyframes netflix-loading {
+            0% {
+                left: -30%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        .resources-loading {
+            display: none;
+            margin: 1rem 0;
+        }
+
         .link {
             margin-top: 10px;
             display: block;
@@ -536,7 +570,7 @@
         <div id="results" class="mt-4"></div>
     </div>
 
-<!--    ====== PRICNG PART ENDS ======-->
+    ====== PRICNG PART ENDS ======
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8727235995900916"
      crossorigin="anonymous"></script>
 <!-- meal -->
@@ -594,6 +628,74 @@
             }
         }
 
+        function displayFoodResources(data, detectedFoods, youtubeContentDiv, googleContentDiv, youtubeLoadingBar, googleLoadingBar, youtubeLoadingText, googleLoadingText) {
+            // Hide loading indicators
+            youtubeLoadingBar.style.display = 'none';
+            googleLoadingBar.style.display = 'none';
+            youtubeLoadingText.style.display = 'none';
+            googleLoadingText.style.display = 'none';
+
+            if (!data || (!data.YoutubeSearch && !data.GoogleSearch)) {
+                // Display error message
+                youtubeContentDiv.innerHTML = '<div class="alert alert-danger mt-2">Failed to load resources.</div>';
+                googleContentDiv.innerHTML = '<div class="alert alert-danger mt-2">Failed to load resources.</div>';
+                console.error('Invalid response format from resources endpoint or error occurred.');
+                return;
+            }
+
+            // Flatten the nested resource arrays and build HTML
+            let allYoutubeHTML = '';
+            const allYoutubeResults = data.YoutubeSearch ? data.YoutubeSearch.flat() : [];
+
+            if (allYoutubeResults.length > 0) {
+                allYoutubeHTML = allYoutubeResults.map(item => {
+                    const videoId = getYouTubeVideoId(item.link);
+                    return videoId ? `
+                        <div class="video-container">
+                            <iframe
+                                src="https://www.youtube.com/embed/${videoId}"
+                                title="${item.title}"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    ` : `
+                        <div class="media-preview">
+                            <div class="content">
+                                <a href="${item.link}" target="_blank" class="text-decoration-none">
+                                    <h3 class="title">${item.title}</h3>
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                allYoutubeHTML = '<p>No video tutorials available.</p>';
+            }
+
+            let allGoogleHTML = '';
+            const allGoogleResults = data.GoogleSearch ? data.GoogleSearch.flat() : [];
+
+            if (allGoogleResults.length > 0) {
+                allGoogleHTML = allGoogleResults.map(item => `
+                    <div class="media-preview">
+                        <div class="content">
+                            <a href="${item.link}" target="_blank" class="text-decoration-none">
+                                <h3 class="title">${item.title}</h3>
+                            </a>
+                            <p class="description">${item.description}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                allGoogleHTML = '<p>No articles available.</p>';
+            }
+
+            // Populate the content divs with all collected HTML
+            youtubeContentDiv.innerHTML = allYoutubeHTML;
+            googleContentDiv.innerHTML = allGoogleHTML;
+        }
+
         function uploadImage() {
             const loading = document.getElementById('loading');
             const resultsDiv = document.getElementById('results');
@@ -611,12 +713,19 @@
 
             formData.append('image', fileInput.files[0]);
 
+            // First fetch: get instructions and detected foods
             fetch('https://ai-utu2.onrender.com/food_detect', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
+                // Stop the spinner after instructions are loaded
                 loading.style.display = 'none';
 
                 if (data.error) {
@@ -624,55 +733,37 @@
                     return;
                 }
 
-                // Structure the cooking instructions
+                // Structure and display the cooking instructions
                 let instructions = data.instructions;
-
-                // Replace double asterisks with bold tags and add line breaks
                 instructions = instructions.replace(/\*\*(.*?)\*\*/g, '<br><strong>$1</strong><br>');
-
-                // Replace single asterisks with paragraph tags
                 instructions = instructions.replace(/\*\s*(.*?)\s*\*/g, '<p>$1</p>');
-
-                // Replace numbered items with line breaks
                 instructions = instructions.replace(/(\d+\.)/g, '<br>$1');
-
-                // Create structured HTML
-                const structuredInstructions = `
+                const structuredInstructionsHTML = `
                     <div class="result-card2">
                         <div class="card-body">
                             <h5 class="card-title">Cooking Instructions</h5>
                             <div class="instructions">${instructions}</div>
                         </div>
                     </div>
+                `;
 
-                    <div class="row g-4 mt-4">
+                resultsDiv.innerHTML = structuredInstructionsHTML;
+
+                // Get the detected foods from the response
+                const detectedFoods = data.food_detected || [];
+                console.log('Detected foods:', detectedFoods);
+
+                // Add a single resource section with loading indicators immediately
+                const resourcesSectionHTML = `
+                    <div class="row g-4 mt-4" id="all-resources-section">
                         <div class="col-md-6">
                             <div class="result-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Youtube Resources</h5>
                                     <h6 class="fw-bold mb-3">Video Tutorials</h6>
-                                    ${data.YoutubeSearch && data.YoutubeSearch[0] && data.YoutubeSearch[0].length > 0 ?
-                                        data.YoutubeSearch[0].map(item => {
-                                            const videoId = getYouTubeVideoId(item.link);
-                                            return videoId ? `
-                                                <div class="video-container">
-                                                    <iframe
-                                                        src="https://www.youtube.com/embed/${videoId}"
-                                                        title="${item.title}"
-                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                        allowfullscreen>
-                                                    </iframe>
-                                                </div>
-                                            ` : `
-                                                <div class="media-preview">
-                                                    <div class="content">
-                                                        <a href="${item.link}" target="_blank" class="text-decoration-none">
-                                                            <h3 class="title">${item.title}</h3>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            `;
-                                        }).join('') : '<p>No video tutorials available.</p>'}
+                                    <div class="netflix-loading-bar"></div>
+                                    <div class="resources-loading">Loading video tutorials...</div>
+                                    <div class="youtube-resources-content"></div>
                                 </div>
                             </div>
                         </div>
@@ -681,29 +772,78 @@
                                 <div class="card-body">
                                     <h5 class="card-title">Google Resources</h5>
                                     <h6 class="fw-bold mb-3">Recommended Articles</h6>
-                                    ${data.GoogleSearch && data.GoogleSearch[0] && data.GoogleSearch[0].length > 0 ?
-                                        data.GoogleSearch[0].map(item => `
-                                            <div class="media-preview">
-                                                <div class="content">
-                                                    <a href="${item.link}" target="_blank" class="text-decoration-none">
-                                                        <h3 class="title">${item.title}</h3>
-                                                    </a>
-                                                    <p class="description">${item.description}</p>
-                                                </div>
-                                            </div>
-                                        `).join('') : '<p>No articles available.</p>'}
+                                    <div class="netflix-loading-bar"></div>
+                                    <div class="resources-loading">Loading articles...</div>
+                                    <div class="google-resources-content"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 `;
 
-                resultsDiv.innerHTML += structuredInstructions;
+                resultsDiv.innerHTML += resourcesSectionHTML;
+
+                // Get references to the resource section elements
+                const allResourcesSection = document.getElementById('all-resources-section');
+                const youtubeContentDiv = allResourcesSection.querySelector('.youtube-resources-content');
+                const googleContentDiv = allResourcesSection.querySelector('.google-resources-content');
+                const youtubeLoadingBar = allResourcesSection.querySelector('.col-md-6:first-child .netflix-loading-bar');
+                const googleLoadingBar = allResourcesSection.querySelector('.col-md-6:last-child .netflix-loading-bar');
+                const youtubeLoadingText = allResourcesSection.querySelector('.col-md-6:first-child .resources-loading');
+                const googleLoadingText = allResourcesSection.querySelector('.col-md-6:last-child .resources-loading');
+
+                // Show loading indicators for the resource section
+                youtubeLoadingBar.style.display = 'block';
+                googleLoadingBar.style.display = 'block';
+                youtubeLoadingText.style.display = 'block';
+                googleLoadingText.style.display = 'block';
+
+                // Second fetch: get resources for all detected foods
+                if (detectedFoods.length > 0) {
+                    fetch('https://ai-utu2.onrender.com/food_detect_resources', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ food_detected: detectedFoods })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Resources data for all detected foods:', data);
+
+                        displayFoodResources(data, detectedFoods, youtubeContentDiv, googleContentDiv, youtubeLoadingBar, googleLoadingBar, youtubeLoadingText, googleLoadingText);
+                    })
+                    .catch(error => {
+                        console.error('Error loading resources:', error);
+
+                        // Display error message and hide loading indicators
+                        youtubeContentDiv.innerHTML = '<div class="alert alert-danger mt-2">Failed to load resources.</div>';
+                        googleContentDiv.innerHTML = '<div class="alert alert-danger mt-2">Failed to load resources.</div>';
+
+                        youtubeLoadingBar.style.display = 'none';
+                        googleLoadingBar.style.display = 'none';
+                        youtubeLoadingText.style.display = 'none';
+                        googleLoadingText.style.display = 'none';
+                    });
+                } else {
+                    // If no foods detected, hide loading and show no resources message
+                    youtubeLoadingBar.style.display = 'none';
+                    googleLoadingBar.style.display = 'none';
+                    youtubeLoadingText.style.display = 'none';
+                    googleLoadingText.style.display = 'none';
+                    youtubeContentDiv.innerHTML = '<p>No video tutorials available.</p>';
+                    googleContentDiv.innerHTML = '<p>No articles available.</p>';
+                }
             })
             .catch(error => {
-                console.error('Error fetching instructions:', error);
+                console.error('Error during food detection:', error);
                 loading.style.display = 'none';
-                resultsDiv.innerHTML += `<div class="alert alert-danger mt-4">Failed to fetch instructions. Please try again.</div>`;
+                resultsDiv.innerHTML = `<div class="alert alert-danger">An error occurred during food detection. Please try again.</div>`;
             });
         }
     </script>
@@ -737,3 +877,5 @@
 
 
 </html>
+
+
