@@ -180,7 +180,7 @@
     <!--[if IE]>
     <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
   <![endif]-->
-<!-- 
+<!--
     ====== PRELOADER PART START ======
 
     <div class="preloader">
@@ -565,7 +565,7 @@
 
 
 
-        
+
     </section>
 
 
@@ -628,7 +628,7 @@
         </div>
     </section>
     <!--====== FEEDBACK FORM PART ENDS ======-->
-        
+
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-7">
@@ -655,15 +655,15 @@
 
     <script>
         // Your Firebase configuration
-              const firebaseConfig = {
-      apiKey: "AIzaSyBxXgqvYHlEpL2QpMLPtcEjc23s1O75S2g",
-      authDomain: "meallensai-40f6f.firebaseapp.com",
-      projectId: "meallensai-40f6f",
-      storageBucket: "meallensai-40f6f.firebasestorage.app",
-      messagingSenderId: "97250360635",
-      appId: "1:97250360635:web:f97290229d0511ae42cb1e",
-      measurementId: "G-EFFLC7RMFM"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfeNB97dUeCtbSBTqTa_oZLNFUoDRCpLg",
+            authDomain: "meallensai-e84bc.firebaseapp.com",
+            projectId: "meallensai-e84bc",
+            storageBucket: "meallensai-e84bc.firebasestorage.app",
+            messagingSenderId: "931517253636",
+            appId: "1:931517253636:web:344608943b23698df08d51",
+            measurementId: "G-XV5LYL1RYJ"
+        };
 
         // Initialize Firebase with debug logging
         try {
@@ -675,7 +675,7 @@
         }
 
         const auth = firebase.auth();
-        
+
         // Set auth persistence to LOCAL to maintain login state
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
             .then(() => {
@@ -690,12 +690,12 @@
             console.log('Starting authentication process for:', mode);
             const provider = new firebase.auth.GoogleAuthProvider();
             provider.addScope('email');
-            
+
             // Force re-prompt to avoid cached credentials issues
             provider.setCustomParameters({
                 prompt: 'select_account'
             });
-            
+
             auth.signInWithPopup(provider)
                 .then((result) => {
                     console.log(`Successfully ${mode}:`, result.user.email);
@@ -726,13 +726,13 @@
             const userProfileDropdown = document.getElementById('userProfileDropdown');
             const testAppButton = document.querySelector('a[href="ai_response.html"]');
             const userEmail = document.getElementById('userEmail');
-            
+
             if (user) {
                 // User is signed in
                 authButtons.classList.add('d-none');
                 userProfileDropdown.classList.remove('d-none');
                 userEmail.textContent = user.email;
-                
+
                 if (testAppButton) {
                     testAppButton.onclick = null; // Remove the click handler
                 }
@@ -748,7 +748,7 @@
                         <a class="page-scroll" onclick="handleAuth('signup')" style="cursor: pointer;">Sign Up</a>
                     </li>
                 `;
-                
+
                 if (testAppButton) {
                     testAppButton.onclick = function(e) {
                         e.preventDefault();
@@ -797,16 +797,16 @@
             color: white;
             transition: all 0.3s ease;
         }
-        
+
         #userProfileDropdown .dropdown-toggle::after {
             display: none;
         }
-        
+
         /* Change profile icon color when navbar is sticky */
         .header_navbar.sticky .profile-icon i {
             color: #FF6B6B !important;
         }
-        
+
         #userProfileDropdown .dropdown-menu {
             min-width: 200px;
             margin-top: 0.5rem;
@@ -814,33 +814,33 @@
             border: none;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
+
         #userProfileDropdown .user-email {
             font-weight: 500;
             color: #2D3436;
             padding: 0.5rem 1rem;
         }
-        
+
         #userProfileDropdown .dropdown-item {
             padding: 0.5rem 1rem;
             color: #2D3436;
         }
-        
+
         #userProfileDropdown .dropdown-item:hover {
             background-color: #f8f9fa;
             color: #FF6B6B;
         }
-        
+
         #authButtons .nav-item {
             margin-left: 1rem;
         }
-        
+
         #authButtons .nav-item a {
             color: white;
             font-weight: 500;
             transition: all 0.3s ease;
         }
-        
+
         #authButtons .nav-item a:hover {
             color: #FF8E53;
         }
@@ -860,7 +860,7 @@
         window.addEventListener('scroll', function() {
             const navbar = document.querySelector('.header_navbar');
             const authButtons = document.querySelectorAll('#authButtons .nav-item a');
-            
+
             if (window.scrollY > 0) {
                 navbar.classList.add('sticky');
             } else {
@@ -931,10 +931,10 @@
         // Handle feedback form submission
         window.handleFeedbackSubmit = function(event) {
             event.preventDefault();
-            
+
             const form = document.getElementById('feedbackForm');
             const formData = new FormData(form);
-            
+
             // Submit to Google Form
             fetch(form.action, {
                 method: 'POST',
@@ -949,7 +949,7 @@
                 console.error('Error:', error);
                 alert('There was an error submitting your feedback. Please try again.');
             });
-            
+
             return false;
         };
     </script>
