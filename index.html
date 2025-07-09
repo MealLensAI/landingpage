@@ -717,16 +717,6 @@
         auth.onAuthStateChanged((user) => {
             console.log('Auth state changed:', user ? 'User logged in' : 'User logged out');
             updateUIForUser(user);
-            
-            // If user is logged in and we're on the home page, redirect to ai_response.html
-            // Check if we're not already in the process of redirecting
-            if (user && (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/')) && !sessionStorage.getItem('redirecting')) {
-                console.log('User is logged in on home page, redirecting to ai_response.html');
-                sessionStorage.setItem('redirecting', 'true');
-                setTimeout(() => {
-                    window.location.href = 'ai_response.html';
-                }, 100);
-            }
         });
 
         // Update UI based on auth state
@@ -786,7 +776,6 @@
             auth.signOut()
                 .then(() => {
                     console.log('Signed out successfully');
-                    sessionStorage.removeItem('redirecting');
                     window.location.href = 'index.html';
                 })
                 .catch((error) => {
@@ -795,14 +784,6 @@
                 });
         };
 
-        // Clear redirecting flag on page load
-        sessionStorage.removeItem('redirecting');
-        
-        // Clear redirecting flag when user manually navigates to home
-        if (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/')) {
-            sessionStorage.removeItem('redirecting');
-        }
-        
         // Initial UI update
         updateUIForUser(auth.currentUser);
     </script>
