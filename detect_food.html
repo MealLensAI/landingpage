@@ -600,6 +600,9 @@
 
 </head>
 <body>
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -643,6 +646,164 @@
                 console.error('Error signing out:', error);
             });
         }
+
+        // Initialize Supabase
+        console.log('About to initialize Supabase...');
+        const supabaseUrl = 'https://pklqumlzpklzroafmtrs.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrbHF1bWx6cGtsenJvYWZtdHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIxMTcxNTIsImV4cCI6MjA2NzY5MzE1Mn0.eyzqg0hBZ5ZoPJKwGXPSKL96TJaPOX_p08dxt4FOn8g';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+        console.log('Supabase initialized:', supabaseClient);
+
+        // Load shared recipe if URL contains share parameter
+        async function loadSharedRecipe() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const shareId = urlParams.get('share');
+            console.log('loadSharedRecipe: shareId =', shareId);
+            
+            if (shareId) {
+                try {
+                    console.log('Fetching shared recipe from Supabase...');
+                    const { data, error } = await supabaseClient
+                        .from('shared_recipes')
+                        .select('*')
+                        .eq('id', shareId)
+                        .single();
+                    console.log('Supabase fetch result:', { data, error });
+
+                    if (error) throw error;
+                    
+                    if (data) {
+                        // Display the shared recipe
+                        displaySharedRecipe(data);
+                    }
+                } catch (error) {
+                    console.error('Error loading shared recipe:', error);
+                    alert('Shared recipe not found or has expired.');
+                }
+            }
+        }
+
+        // Display shared recipe
+        function displaySharedRecipe(recipeData) {
+            const resultsDiv = document.getElementById('results');
+            let content = '';
+
+            if (recipeData.recipe_type === 'food_detection') {
+                // Display food detection result
+                const detectedFoods = recipeData.detected_foods ? JSON.parse(recipeData.detected_foods) : [];
+                content = `
+                    <div class="result-card2">
+                        <div class="card-body">
+                            <h5 class="card-title">Detected Food</h5>
+                            <p><strong>Food Items:</strong> ${detectedFoods.join(', ')}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Add cooking instructions if available (as HTML)
+            if (recipeData.instructions) {
+                content += `
+                    <div class="result-card2">
+                        <div class="card-body">
+                            <h5 class="card-title">Cooking Instructions</h5>
+                            <div class="instructions">${recipeData.instructions}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Add YouTube and Google sections if available (as HTML)
+            if (recipeData.resources) {
+                content += recipeData.resources;
+            }
+
+            resultsDiv.innerHTML = content;
+        }
+
+        // Function to share the full recipe
+        async function shareFullRecipe() {
+            try {
+                // Gather detected foods from the cooking instructions card
+                const instructionsCard = document.getElementById('results').querySelector('.result-card2');
+                let detectedFoods = [];
+                
+                // Try to get detected foods from the global variable
+                if (window.detectedFoods && window.detectedFoods.length > 0) {
+                    detectedFoods = window.detectedFoods;
+                } else {
+                    // Fallback: try to extract from the page content
+                    const instructionsText = instructionsCard ? instructionsCard.textContent : '';
+                    detectedFoods = ['Detected Food']; // Placeholder
+                }
+
+                // Gather instructions as HTML
+                const instructionsElement = document.getElementById('results').querySelector('.instructions');
+                const instructionsHTML = instructionsElement ? instructionsElement.innerHTML : '';
+
+                // Gather YouTube resources as HTML
+                let youtubeHTML = '';
+                const youtubeCard = Array.from(document.querySelectorAll('.result-card')).find(card =>
+                    card.querySelector('.card-title') && card.querySelector('.card-title').textContent.includes('Youtube Resources')
+                );
+                if (youtubeCard) {
+                    youtubeHTML = youtubeCard.outerHTML;
+                }
+
+                // Gather Google resources as HTML
+                let googleHTML = '';
+                const googleCard = Array.from(document.querySelectorAll('.result-card')).find(card =>
+                    card.querySelector('.card-title') && card.querySelector('.card-title').textContent.includes('Google Resources')
+                );
+                if (googleCard) {
+                    googleHTML = googleCard.outerHTML;
+                }
+
+                // Gather the entire row containing both YouTube and Google resources
+                let resourcesHTML = '';
+                const resourcesRow = document.querySelector('.row.g-4.mt-4');
+                if (resourcesRow) {
+                    resourcesHTML = resourcesRow.outerHTML;
+                }
+
+                // Save recipe to Supabase
+                const { data, error } = await supabaseClient
+                    .from('shared_recipes')
+                    .insert([
+                        {
+                            recipe_type: 'food_detection',
+                            detected_foods: JSON.stringify(detectedFoods),
+                            instructions: instructionsHTML,
+                            resources: resourcesHTML
+                        }
+                    ])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                // Generate shareable link
+                const shareableLink = `${window.location.origin}${window.location.pathname}?share=${data.id}`;
+
+                // Share the link
+                if (navigator.share) {
+                    await navigator.share({
+                        title: `Food Detection Recipe`,
+                        text: `Check out this recipe I made with MealLensAI!`,
+                        url: shareableLink
+                    });
+                } else {
+                    await navigator.clipboard.writeText(shareableLink);
+                    alert('Shareable link copied to clipboard! Anyone can visit this link to see your recipe.');
+                }
+            } catch (error) {
+                if (error.name === 'AbortError' || error.message === 'Share canceled') return;
+                alert('Failed to share recipe. Error: ' + (error.message || JSON.stringify(error)));
+            }
+        }
+
+        // Call loadSharedRecipe when page loads
+        document.addEventListener('DOMContentLoaded', loadSharedRecipe);
     </script>
 
     <div class="switch-container">
@@ -974,6 +1135,25 @@
             // Populate the content divs with all collected HTML
             youtubeContentDiv.innerHTML = allYoutubeHTML;
             googleContentDiv.innerHTML = allGoogleHTML;
+
+            // Add the share button after resources are loaded
+            const resultsDiv = document.getElementById('results');
+
+            // Remove any existing share button to avoid duplicates
+            const oldShareBtn = document.getElementById('shareFullRecipeBtn');
+            if (oldShareBtn) oldShareBtn.remove();
+
+            // Add the share button at the end
+            resultsDiv.innerHTML += `
+                <div class="text-center mt-4">
+                    <button class="btn btn-submit" id="shareFullRecipeBtn">
+                        📤 Share This Recipe
+                    </button>
+                </div>
+            `;
+
+            // Attach the event handler
+            document.getElementById('shareFullRecipeBtn').onclick = () => shareFullRecipe();
         }
 
         function uploadImage() {
@@ -1032,6 +1212,9 @@
                 // Get the detected foods from the response
                 const detectedFoods = data.food_detected || [];
                 console.log('Detected foods:', detectedFoods);
+                
+                // Store detected foods globally for sharing
+                window.detectedFoods = detectedFoods;
 
                 // Add a single resource section with loading indicators immediately
                 const resourcesSectionHTML = `
@@ -1304,5 +1487,4 @@
 
 
 </html>
-
 

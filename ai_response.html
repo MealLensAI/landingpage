@@ -469,41 +469,8 @@
     </style>
 </head>
 <body>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
-
-    <script>
-        // Your Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDfeNB97dUeCtbSBTqTa_oZLNFUoDRCpLg",
-            authDomain: "meallensai-e84bc.firebaseapp.com",
-            projectId: "meallensai-e84bc",
-            storageBucket: "meallensai-e84bc.firebasestorage.app",
-            messagingSenderId: "931517253636",
-            appId: "1:931517253636:web:344608943b23698df08d51",
-            measurementId: "G-XV5LYL1RYJ"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-
-        // Check authentication state
-        auth.onAuthStateChanged((user) => {
-            if (!user) {
-                // If user is not logged in, redirect to index.html
-                window.location.href = 'index.html';
-                return;
-            }
-            // User is logged in, show the content
-            document.body.style.display = 'block';
-        });
-
-        // Initially hide the body content
-        document.body.style.display = 'none';
-    </script>
+    <!-- Supabase SDK FIRST -->
+   
 
     <div class="switch-container">
         <button class="switch-button" onclick="switchTo('response')"> Detect Ingredients</button>
@@ -1069,6 +1036,25 @@ document.addEventListener('DOMContentLoaded', () => {
                             feedbackModal.style.visibility = 'visible';
                         }
                     }, 20000); // Changed delay to 1 minute (60000ms)
+
+                    // Add the share button at the end
+                    const resultsDiv = document.getElementById('results');
+
+                    // Remove any existing share button to avoid duplicates
+                    const oldShareBtn = document.getElementById('shareFullRecipeBtn');
+                    if (oldShareBtn) oldShareBtn.remove();
+
+                    // Add the share button at the end
+                    resultsDiv.innerHTML += `
+                        <div class="text-center mt-4">
+                            <button class="btn btn-analyze" id="shareFullRecipeBtn">
+                                📤 Share This Recipe
+                            </button>
+                        </div>
+                    `;
+
+                    // Attach the event handler
+                    document.getElementById('shareFullRecipeBtn').onclick = () => shareFullRecipe();
                 })
                 .catch(error => {
                     console.error('Error fetching resources:', error);
@@ -1258,9 +1244,283 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Close modal is handled in .then() and .catch() now.
         });
+
+        // Function to share the recipe
+        async function shareRecipe(suggestion, instructions, analysisId) {
+            try {
+                // Get ingredients and suggestions from the page
+                const ingredientsElement = document.getElementById('results').querySelector('.result-card:first-of-type ol');
+                const suggestionsElement = document.getElementById('results').querySelector('.result-card:last-of-type .d-flex.flex-wrap.gap-2');
+                
+                const ingredients = ingredientsElement ? Array.from(ingredientsElement.children).map(li => li.textContent.trim()) : [];
+                const suggestions = suggestionsElement ? Array.from(suggestionsElement.children).map(btn => btn.textContent.trim()) : [];
+
+                console.log('About to insert recipe into Supabase:', { suggestion, instructions, analysisId, ingredients, suggestions });
+                // Save recipe to Supabase
+                const { data, error } = await supabaseClient
+                    .from('shared_recipes')
+                    .insert([
+                        {
+                            recipe_type: 'ingredient_detection',
+                            suggestion: suggestion,
+                            instructions: instructions,
+                            ingredients: JSON.stringify(ingredients),
+                            analysis_id: analysisId
+                        }
+                    ])
+                    .select()
+                    .single();
+                console.log('Supabase insert result:', { data, error });
+
+                if (error) throw error;
+
+                // Generate shareable link
+                const shareableLink = `${window.location.origin}${window.location.pathname}?share=${data.id}`;
+                console.log('Generated shareable link:', shareableLink);
+
+                // Share the link
+                if (navigator.share) {
+                    await navigator.share({
+                        title: `${suggestion} Recipe`,
+                        text: `Check out this ${suggestion} recipe I made with MealLensAI!`,
+                        url: shareableLink
+                    });
+                    console.log('Recipe shared successfully');
+                } else {
+                    // Fallback: copy link to clipboard
+                    await navigator.clipboard.writeText(shareableLink);
+                    alert('Shareable link copied to clipboard! Anyone can visit this link to see your recipe.');
+                }
+            } catch (error) {
+                console.error('Error sharing recipe:', error);
+                alert('Failed to create shareable link. Error: ' + (error.message || JSON.stringify(error)));
+            }
+        }
+
+        async function shareFullRecipe() {
+            try {
+                // Gather ingredients
+                const ingredientsElement = document.getElementById('results').querySelector('.result-card:first-of-type ol');
+                const ingredients = ingredientsElement ? Array.from(ingredientsElement.children).map(li => li.textContent.trim()) : [];
+
+                // Gather instructions as HTML
+                const instructionsElement = document.getElementById('results').querySelector('.instructions');
+                const instructionsHTML = instructionsElement ? instructionsElement.innerHTML : '';
+
+                // Gather YouTube resources as HTML
+                let youtubeHTML = '';
+                const youtubeCard = Array.from(document.querySelectorAll('.result-card')).find(card =>
+                    card.querySelector('.card-title') && card.querySelector('.card-title').textContent.includes('Youtube Resources')
+                );
+                if (youtubeCard) {
+                    youtubeHTML = youtubeCard.outerHTML;
+                }
+
+                // Gather Google resources as HTML
+                let googleHTML = '';
+                const googleCard = Array.from(document.querySelectorAll('.result-card')).find(card =>
+                    card.querySelector('.card-title') && card.querySelector('.card-title').textContent.includes('Google Resources')
+                );
+                if (googleCard) {
+                    googleHTML = googleCard.outerHTML;
+                }
+
+                // Compose a suggestion (recipe name) if available
+                let suggestion = '';
+                const suggestionBtn = document.querySelector('.suggestion-button');
+                if (suggestionBtn) {
+                    suggestion = suggestionBtn.textContent.trim();
+                }
+
+                // Compose a unique analysisId if available (optional)
+                let analysisId = window.analysisId || '';
+
+                // Gather the entire row containing both YouTube and Google resources
+                let resourcesHTML = '';
+                const resourcesRow = document.querySelector('.row.g-4.mt-4');
+                if (resourcesRow) {
+                    resourcesHTML = resourcesRow.outerHTML;
+                }
+
+                // Save recipe to Supabase
+                const { data, error } = await supabaseClient
+                    .from('shared_recipes')
+                    .insert([
+                        {
+                            recipe_type: 'ingredient_detection',
+                            suggestion: suggestion,
+                            instructions: instructionsHTML,
+                            ingredients: JSON.stringify(ingredients),
+                            resources: resourcesHTML, // <-- new field
+                            analysis_id: analysisId
+                        }
+                    ])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                // Generate shareable link
+                const shareableLink = `${window.location.origin}${window.location.pathname}?share=${data.id}`;
+
+                // Share the link
+                if (navigator.share) {
+                    await navigator.share({
+                        title: `${suggestion} Recipe`,
+                        text: `Check out this recipe I made with MealLensAI!`,
+                        url: shareableLink
+                    });
+                } else {
+                    await navigator.clipboard.writeText(shareableLink);
+                    alert('Shareable link copied to clipboard! Anyone can visit this link to see your recipe.');
+                }
+            } catch (error) {
+                if (error.name === 'AbortError' || error.message === 'Share canceled') return;
+                alert('Failed to share recipe. Error: ' + (error.message || JSON.stringify(error)));
+            }
+        }
     </script>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+
+<!-- Your inline script that uses supabase and firebase -->
+<script>
+    // Your Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyDfeNB97dUeCtbSBTqTa_oZLNFUoDRCpLg",
+        authDomain: "meallensai-e84bc.firebaseapp.com",
+        projectId: "meallensai-e84bc",
+        storageBucket: "meallensai-e84bc.firebasestorage.app",
+        messagingSenderId: "931517253636",
+        appId: "1:931517253636:web:344608943b23698df08d51",
+        measurementId: "G-XV5LYL1RYJ"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Initialize Supabase
+    console.log('About to initialize Supabase...');
+    const supabaseUrl = 'https://pklqumlzpklzroafmtrs.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrbHF1bWx6cGtsenJvYWZtdHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIxMTcxNTIsImV4cCI6MjA2NzY5MzE1Mn0.eyzqg0hBZ5ZoPJKwGXPSKL96TJaPOX_p08dxt4FOn8g';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+    console.log('Supabase initialized:', supabaseClient);
+
+    // Check authentication state
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            // If user is not logged in, redirect to index.html
+            window.location.href = 'index.html';
+            return;
+        }
+        // User is logged in, show the content
+        document.body.style.display = 'block';
+    });
+
+    // Initially hide the body content
+    document.body.style.display = 'none';
+
+    // Load shared recipe if URL contains share parameter
+    async function loadSharedRecipe() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const shareId = urlParams.get('share');
+        console.log('loadSharedRecipe: shareId =', shareId);
+        
+        if (shareId) {
+            try {
+                console.log('Fetching shared recipe from Supabase...');
+                const { data, error } = await supabaseClient
+                    .from('shared_recipes')
+                    .select('*')
+                    .eq('id', shareId)
+                    .single();
+                console.log('Supabase fetch result:', { data, error });
+
+                if (error) throw error;
+                
+                if (data) {
+                    // Display the shared recipe
+                    displaySharedRecipe(data);
+                }
+            } catch (error) {
+                console.error('Error loading shared recipe:', error);
+                alert('Shared recipe not found or has expired.');
+            }
+        }
+    }
+
+    // Display shared recipe
+    function displaySharedRecipe(recipeData) {
+        const resultsDiv = document.getElementById('results');
+        let content = '';
+
+        if (recipeData.recipe_type === 'ingredient_detection') {
+            // Display ingredient detection result
+            const ingredients = recipeData.ingredients ? JSON.parse(recipeData.ingredients) : [];
+            const suggestions = recipeData.suggestion ? [recipeData.suggestion] : [];
+
+            content = `
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="result-card">
+                            <div class="card-body">
+                                <h5 class="card-title">AI Detected Ingredient</h5>
+                                <ol class="ps-4">${ingredients.map(item => `<li class="mb-3">${item}</li>`).join('')}</ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="result-card">
+                            <div class="card-body">
+                                <h5 class="card-title">AI Recipe Suggestions</h5>
+                                <div class="d-flex flex-wrap gap-2">${suggestions.map(suggestion => `<button class="suggestion-button">${suggestion}</button>`).join('')}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Display food detection result
+            const detectedFoods = recipeData.detected_foods ? JSON.parse(recipeData.detected_foods) : [];
+            content = `
+                <div class="result-card2">
+                    <div class="card-body">
+                        <h5 class="card-title">Detected Food</h5>
+                        <p><strong>Food Items:</strong> ${detectedFoods.join(', ')}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Add cooking instructions if available (as HTML)
+        if (recipeData.instructions) {
+            content += `
+                <div class="result-card2">
+                    <div class="card-body">
+                        <h5 class="card-title">Cooking Instructions</h5>
+                        <div class="instructions">${recipeData.instructions}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Add YouTube and Google sections if available (as HTML)
+        if (recipeData.resources) {
+            content += recipeData.resources;
+        }
+
+        resultsDiv.innerHTML = content;
+    }
+
+    // Call loadSharedRecipe when page loads
+    document.addEventListener('DOMContentLoaded', loadSharedRecipe);
+</script>
 
 
 </body>
